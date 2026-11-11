@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>點數銀行連線測試</title>
+<style>
+  :root { --ink:#1d2b33; --muted:#5f6f76; --green:#2f7d5b; --red:#b3261e; --line:#d9e2e5; --bg:#f3f6f7; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+  header { background: #17323f; color: #fff; padding: 16px; }
+  header .eyebrow { font-size: 12px; letter-spacing: 1px; opacity: .8; }
+  header h1 { margin: 2px 0 0; font-size: 22px; }
+  main { max-width: 640px; margin: 0 auto; padding: 16px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  .card h2 { margin: 0 0 8px; font-size: 18px; }
+  .muted { color: var(--muted); font-size: 14px; }
+  .step { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--line); }
+  .step:first-of-type { border-top: 0; }
+  .mark { flex: 0 0 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; background: #e7edef; color: var(--muted); }
+  .ok .mark { background: #dff2e8; color: var(--green); }
+  .bad .mark { background: #fbe3e1; color: var(--red); }
+  .step strong { display: block; }
+  .detail { font-size: 14px; color: var(--muted); overflow-wrap: anywhere; }
+  .bad .detail { color: var(--red); }
+  label { display: block; font-weight: 700; margin-top: 10px; }
+  input { width: 100%; font: inherit; padding: 10px 12px; border: 1px solid #b9c6cb; border-radius: 10px; margin-top: 4px; }
+  button { font: inherit; font-weight: 700; border: 0; border-radius: 10px; padding: 10px 16px; background: var(--green); color: #fff; margin-top: 12px; cursor: pointer; }
+  button:disabled { opacity: .5; }
+  .summary { font-size: 18px; font-weight: 800; }
+  .summary.ok { color: var(--green); }
+  .summary.bad { color: var(--red); }
+  code { font-size: 13px; background: #eef3f4; padding: 1px 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<header><div class="eyebrow">POINT BANK · 連線測試</div><h1>點數銀行連線測試</h1></header>
+<main>
+  <section class="card">
+    <h2>這是什麼</h2>
+    <p class="muted">這個頁面放在 GitHub Pages，直接連到點數銀行的後端，用來確認「手機登入多個 Google 帳號時也能使用」。請用平常會出錯的那支手機、<b>一般分頁</b>（不要用私密瀏覽）打開。</p>
+    <p class="muted">頁面不會儲存帳號或密碼；登入測試結束後會自動登出。</p>
+  </section>
+  <section class="card">
+    <h2>1. 自動測試</h2>
+    <div id="auto"></div>
+    <button type="button" id="rerun">重新測試</button>
+  </section>
+  <section class="card">
+    <h2>2. 登入測試</h2>
+    <p class="muted">輸入點數銀行的帳號、密碼（教師或學生都可以）。測試完會自動登出，不會改動任何資料。</p>
+    <label for="username">登入帳號</label>
+    <input id="username" autocomplete="username" autocapitalize="none" spellcheck="false">
+    <label for="password">密碼</label>
+    <input id="password" type="password" autocomplete="current-password">
+    <button type="button" id="login">登入測試</button>
+    <div id="loginResult"></div>
+  </section>
+  <section class="card">
+    <h2>結果</h2>
+    <p id="summary" class="summary">測試中…</p>
+    <p class="muted" id="env"></p>
+  </section>
+</main>
+<script>
+(function () {
+  'use strict';
+  var API = 'https:' + '/' + '/' + 'script.google.com/macros/s/AKfycbwCG0CBw7-S0ld5GXO156r9vPPKRsvtAKG9wgNarn_bc0S3CgVIkMPjalcAcq2kwatf/exec';
+  var NEED = '5.7.1';
+  var results = { connect: null, big: null, login: null };
+
+  function $(id) { return document.getElementById(id); }
+  function text(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  /* 用 text/plain 傳 JSON，避免 CORS 預檢；credentials:'omit' 確保不帶任何 Google 登入資料。 */
+  function call(action, input, token) {
+    var started = Date.now();
+    var timer = new Promise(function (_, reject) { setTimeout(function () { reject(new Error('超過 30 秒沒有回應。')); }, 30000); });
+    var request = fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: action, input: input || {}, token: token || '' }),
+      credentials: 'omit',
+      redirect: 'follow'
+    }).then(function (res) {
+      return res.text().then(function (body) {
+        var data;
+        try { data = JSON.parse(body); } catch (e) {
+          throw new Error('後端沒有回傳資料（HTTP ' + res.status + '）。可能是 Google 端還沒部署含 doPost 的新版本。');
+        }
+        return { result: data, ms: Date.now() - started };
+      });
+    }, function (e) {
+      throw new Error('無法連線（' + (e && e.message ? e.message : e) + '）。如果 Google 端還沒發布含 doPost 的新版本（v5.7.1），也會出現這個訊息。');
+    });
+    return Promise.race([request, timer]);
+  }
+
+  function stepHtml(state, title, detail) {
+    var mark = state === 'ok' ? '✓' : state === 'bad' ? '✕' : '…';
+    return '<div class="step ' + (state || '') + '"><span class="mark">' + mark + '</span><div><strong>' + text(title) + '</strong><span class="detail">' + text(detail || '') + '</span></div></div>';
+  }
+
+  function summary() {
+    var s = $('summary');
+    if (results.connect === false || results.big === false || results.login === false) { s.className = 'summary bad'; s.textContent = '有項目失敗，請把這個畫面截圖給 Claude。'; return; }
+    if (results.connect && results.big && results.login) { s.className = 'summary ok'; s.textContent = '全部通過！這支手機可以透過新方式使用點數銀行。請截圖給 Claude。'; return; }
+    if (results.connect && results.big) { s.className = 'summary'; s.textContent = '連線正常。請再做「2. 登入測試」。'; return; }
+    s.className = 'summary'; s.textContent = '測試中…';
+  }
+
+  function runAuto() {
+    $('rerun').disabled = true;
+    results.connect = null; results.big = null; summary();
+    var rows = [stepHtml('', '連線到點數銀行後端', '測試中…'), stepHtml('', '傳送大型資料（約 4 MB，相當於一張照片附件）', '等待上一步…')];
+    $('auto').innerHTML = rows.join('');
+    call('config').then(function (r) {
+      var ok = r.result && r.result.ok && r.result.data && r.result.data.version;
+      if (!ok) throw new Error((r.result && r.result.message) || '回應格式不正確。');
+      var version = r.result.data.version, fresh = version === NEED;
+      results.connect = fresh;
+      rows[0] = stepHtml(fresh ? 'ok' : 'bad', '連線到點數銀行後端', '後端版本 ' + version + '，耗時 ' + r.ms + ' 毫秒' + (fresh ? '' : '（需要 ' + NEED + '，請確認 Google 端已發布新版本）'));
+      $('auto').innerHTML = rows.join('');
+      var padding = new Array(4 * 1024 * 1024 + 1).join('x');
+      return call('config', { padding: padding });
+    }).then(function (r) {
+      if (!r) return;
+      var ok = r.result && r.result.ok;
+      results.big = Boolean(ok);
+      rows[1] = stepHtml(ok ? 'ok' : 'bad', '傳送大型資料（約 4 MB，相當於一張照片附件）', ok ? '成功，耗時 ' + r.ms + ' 毫秒' : (r.result && r.result.message) || '失敗');
+      $('auto').innerHTML = rows.join('');
+    }).catch(function (e) {
+      if (results.connect === null) { results.connect = false; rows[0] = stepHtml('bad', '連線到點數銀行後端', e.message); rows[1] = stepHtml('', '傳送大型資料', '略過'); }
+      else { results.big = false; rows[1] = stepHtml('bad', '傳送大型資料（約 4 MB）', e.message); }
+      $('auto').innerHTML = rows.join('');
+    }).then(function () { $('rerun').disabled = false; summary(); });
+  }
+
+  function runLogin() {
+    var username = $('username').value.trim(), password = $('password').value;
+    if (!username || !password) { $('loginResult').innerHTML = stepHtml('bad', '請輸入帳號和密碼', ''); return; }
+    $('login').disabled = true;
+    var rows = [stepHtml('', '登入', '測試中…')], token = '';
+    $('loginResult').innerHTML = rows.join('');
+    call('login', { username: username, password: password }).then(function (r) {
+      if (!r.result.ok) throw new Error(r.result.message || '登入失敗');
+      token = r.result.data.token;
+      var me = r.result.data.me || {};
+      rows[0] = stepHtml('ok', '登入', '成功：' + (me.name || '') + '（' + (me.role || '') + '），耗時 ' + r.ms + ' 毫秒');
+      rows.push(stepHtml('', '讀取首頁資料', '測試中…'));
+      $('loginResult').innerHTML = rows.join('');
+      return call('dashboard', {}, token);
+    }).then(function (r) {
+      var ok = r.result.ok && r.result.data && r.result.data.me;
+      if (!ok) throw new Error(r.result.message || '讀取失敗');
+      var home = r.result.data.home || {}, total = home.summary ? '總點數 ' + home.summary.total + ' 點' : home.students ? '學生 ' + home.students.length + ' 位' : (r.result.data.me.mustChange ? '需要先換密碼（測試頁不處理）' : '已取得資料');
+      rows[1] = stepHtml('ok', '讀取首頁資料', total + '，耗時 ' + r.ms + ' 毫秒');
+      results.login = true;
+    }).catch(function (e) {
+      results.login = false;
+      rows[rows.length - 1] = stepHtml('bad', rows.length === 1 ? '登入' : '讀取首頁資料', e.message);
+    }).then(function () {
+      $('password').value = '';
+      if (token) {
+        call('logout', {}, token).then(function () { rows.push(stepHtml('ok', '已自動登出', '這次的登入已撤銷。')); $('loginResult').innerHTML = rows.join(''); }, function () { rows.push(stepHtml('bad', '自動登出失敗', '請到點數銀行重新登入再登出一次。')); $('loginResult').innerHTML = rows.join(''); });
+      }
+      $('loginResult').innerHTML = rows.join('');
+      $('login').disabled = false; summary();
+    });
+  }
+
+  $('rerun').addEventListener('click', runAuto);
+  $('login').addEventListener('click', runLogin);
+  $('password').addEventListener('keydown', function (e) { if (e.key === 'Enter') runLogin(); });
+  $('env').textContent = '測試環境：' + navigator.userAgent;
+  runAuto();
+})();
+</script>
+</body>
+</html>
