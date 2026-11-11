@@ -1,11 +1,1247 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex">
-<title>點數銀行</title>
-<style>body{margin:0;background:#f3f6f7;color:#1d2b33;font:16px/1.6 -apple-system,"PingFang TC","Noto Sans TC",sans-serif}main{max-width:560px;margin:15vh auto 0;padding:16px;text-align:center}a{color:#2f7d5b;font-weight:700}</style>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>點數銀行</title>
+  <style>
+    :root{--ink:#18384c;--muted:#627784;--green:#147c69;--bg:#f2f6f6;--line:#dbe5e6;--red:#ab3535}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Noto Sans TC",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:9px;background:var(--green);color:white;padding:10px 16px;font-weight:650}button.secondary{background:#e7eff0;color:var(--ink)}button.danger{background:var(--red)}.record-actions{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:8px}.record-actions button{white-space:nowrap;padding:5px 10px;font-size:13px}.stats-dialog.record-edit-dialog{width:min(560px,96vw)}button.link{padding:0;background:transparent;color:var(--green);text-decoration:underline;text-align:left}button:disabled{opacity:.5;cursor:wait}button:focus-visible,a:focus-visible{outline:3px solid #e7ac38;outline-offset:3px}
+    header{background:#163b4c;color:white}header .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:18px;padding-bottom:18px}.brand{font-size:23px;font-weight:800;letter-spacing:.04em}.eyebrow{font-size:12px;letter-spacing:.14em;opacity:.75}.wrap{max-width:1160px;margin:auto;padding:24px}h1{font-size:29px;margin:0 0 8px}h2{font-size:21px;margin:0 0 16px}h3{font-size:17px;margin:0 0 12px}p{margin:6px 0 16px}.muted{color:var(--muted);font-size:14px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 4px 16px #18384c05}.auth{max-width:520px;margin:24px auto}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}.stat{background:white;border:1px solid var(--line);border-radius:14px;padding:18px}.stat strong{display:block;font-size:34px;color:var(--green)}label{display:block;margin:12px 0 5px;font-weight:600;font-size:14px}input,select,textarea{display:block;width:100%;border:1px solid #bdcdd0;border-radius:8px;background:white;color:var(--ink);padding:10px}textarea{min-height:94px;resize:vertical}input:focus,select:focus,textarea:focus{outline:2px solid #147c6940;border-color:var(--green)}.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}.row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.table-scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:13px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:12px;background:#f7fafa;white-space:nowrap}td.note{min-width:180px;max-width:340px;white-space:pre-wrap;overflow-wrap:anywhere}.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;white-space:nowrap;background:#edf1f2}.approved{background:#dff2e9;color:#126b4c}.pending{background:#fff0cd;color:#8a5a00}.rejected{background:#fbe6e4;color:#a13a31}.empty{text-align:center;padding:28px;color:var(--muted)}.banner{position:sticky;top:0;z-index:20;background:#edf7f1;border-bottom:1px solid #bbdfce;padding:12px 24px;white-space:pre-wrap}.banner.error{background:#fff0ee;border-color:#e9c6c0;color:#9b3028}.banner[hidden]{display:none}.account{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}.small{font-size:12px}.loading{padding:50px;text-align:center}.spacer{margin-top:24px}details{margin-top:16px}summary{cursor:pointer;font-weight:650;color:var(--green)}.nav button{font-size:13px;padding:7px 12px}.hero{margin:8px 0 24px}.split{display:grid;grid-template-columns:1.2fr 1fr;gap:20px}.full{grid-column:1/-1}.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:760px){.wrap{padding:16px}.grid,.split{grid-template-columns:1fr}.card{padding:18px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:27px}.stat span{font-size:12px}h1{font-size:24px}header .wrap{align-items:flex-start}.brand{font-size:20px}.nav{max-width:200px;justify-content:flex-end}.auth{margin-top:8px}th,td{padding:10px 8px}}
+    .check{display:flex;align-items:center;gap:10px}.check input{width:auto}.queue-grid{display:grid;grid-template-columns:minmax(230px,1fr) 2fr;gap:20px}.queue-item{display:block;width:100%;text-align:left;margin:8px 0;background:#edf3f3;color:var(--ink)}.queue-item.selected{outline:2px solid var(--green);background:#def1e9}.attachments{margin:8px 0;font-size:13px;display:grid;gap:6px}.attachments button{font-size:13px;padding:4px 8px}.attachments a{color:var(--green)}.stat button.link{font-size:34px;font-weight:750}.queue-top{margin-bottom:20px}.warning{color:#9a5b00}.file-note{white-space:pre-wrap;overflow-wrap:anywhere}@media(max-width:760px){.queue-grid{grid-template-columns:1fr}.queue-list{max-height:240px;overflow:auto}}
+    .image-preview{width:min(1200px,96vw);height:90vh;max-height:94vh;border:0;border-radius:16px;padding:0;color:var(--ink);background:white;box-shadow:0 24px 80px #0005}.image-preview::backdrop{background:#102531c9}.preview-shell{height:100%;display:flex;flex-direction:column}.preview-header,.preview-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line)}.preview-header{justify-content:space-between}.preview-header h2{font-size:18px;margin:0;overflow-wrap:anywhere;flex:1;min-width:140px}.preview-toolbar button{padding:7px 12px;font-size:14px}.preview-toolbar output{font-variant-numeric:tabular-nums;min-width:54px;text-align:center}.preview-stage{overflow:auto;flex:1;min-height:100px;background:#e5ebed;cursor:grab;overscroll-behavior:contain}.preview-canvas{width:max-content;min-width:100%;height:max-content;min-height:100%;display:flex;justify-content:center;align-items:center;padding:16px}.preview-image{display:block;max-width:none;max-height:none;flex:none;user-select:none}.preview-status{padding:16px 18px;margin:0}.preview-hint{margin:0;padding:8px 18px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}.image-preview [hidden]{display:none!important}@media(max-width:600px){.image-preview{width:98vw;height:94vh;max-height:96vh;border-radius:10px}.preview-header,.preview-toolbar{padding:10px;gap:6px}.preview-toolbar button{padding:7px 9px}.preview-header h2{font-size:15px}}
+    .roster-tools{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin:12px 0 18px}.roster-tools label{margin:0;min-width:180px}.stats-dialog{width:min(1080px,96vw);max-height:92vh;padding:0;border:0;border-radius:16px;color:var(--ink);background:var(--bg)}.stats-dialog::backdrop{background:#102531bd}.stats-dialog-header{padding:18px 22px;background:white;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}.stats-dialog-header h2{margin:0}.stats-dialog-body{padding:20px}.stats-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}.stats-metrics .stat strong{font-size:28px;overflow-wrap:anywhere}.stats-method{font-size:12px;color:var(--muted)}.reward-result{padding:12px;background:#e5f2ed;border-radius:8px;min-height:48px}.stats-dialog label.check{min-width:0}.stats-dialog .card:last-child{margin-bottom:0}@media(max-width:600px){.stats-dialog-body{padding:12px}.stats-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stats-metrics .stat strong{font-size:24px}.roster-tools label{min-width:140px;flex:1}}
+    .point-draft{border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0;background:#fbfdfd}.point-draft h3{margin:0}.point-draft .grid{gap:12px}.point-draft .row button{font-size:12px;padding:6px 10px}.point-draft input:disabled,.point-draft select:disabled,.point-draft textarea:disabled{background:#edf2f2;color:#5b6d78}
+    .submission-progress{width:100vw;max-width:100vw;height:100vh;max-height:100vh;margin:0;padding:24px;border:0;background:#f2f6f6;color:var(--ink)}.submission-progress::backdrop{background:#163b4cf2}.submission-progress section{max-width:680px;margin:12vh auto 0;background:white;border-radius:18px;border:1px solid var(--line);padding:32px}.submission-progress progress{width:100%;height:22px;accent-color:var(--green)}
+    .student-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}.student-tabs button{border-radius:20px;padding:8px 18px}@media(max-width:760px){.student-tabs{gap:6px}.student-tabs button{padding:7px 11px;font-size:14px}}
+    .weekly-tools{display:flex;align-items:center;gap:10px;margin:0 0 12px}.weekly-tools label{margin:0;white-space:nowrap}.weekly-tools select{width:auto;min-width:200px}
+    .weekly-table th,.weekly-table td{text-align:center;white-space:nowrap;vertical-align:middle}.weekly-table th:first-child{position:sticky;left:0;z-index:1;background:#f7fafa;text-align:left;border-right:1px solid var(--line)}.weekly-table tbody th{color:var(--ink);font-size:14px}.weekly-table tbody th span{display:block;color:var(--muted);font-weight:400}
+    .weekly-table tr.current th,.weekly-table tr.current td{background:#e8f5f1}.weekly-table tr.future td{color:#a3b1b8}.weekly-table .neg{color:var(--red)}.weekly-none{color:#c3ced3}.weekly-pending{display:block;font-size:11px;color:#9a6b00}.weekly-table tfoot th,.weekly-table tfoot td{font-weight:700;border-top:2px solid var(--line);border-bottom:0}.weekly-total{background:#f7fafa}
+    .point-group{border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0;background:#fbfdfd}.point-group h3{margin:0}.point-grid th,.point-grid td{vertical-align:middle}.point-grid tbody th{color:var(--ink);font-size:14px;white-space:normal;min-width:130px;background:white}.point-grid input{margin:0}.point-grid input[type=number]{width:110px}.point-grid input[type=file]{font-size:12px;max-width:230px;padding:6px}.point-grid td>span,.point-desc{display:block;font-weight:400}.tag-required{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:10px;background:#fde8e8;color:var(--red);font-size:11px;font-weight:700;vertical-align:middle}
+    @media(max-width:760px){.point-grid thead{display:none}.point-grid,.point-grid tbody,.point-grid tr,.point-grid th,.point-grid td{display:block;width:100%}.point-grid tr{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px;background:white}.point-grid tbody th,.point-grid td{border:0;padding:4px 0}.point-grid td::before{content:attr(data-label);display:block;font-size:12px;color:var(--muted)}.point-grid input[type=number],.point-grid input[type=file]{width:100%;max-width:none}}
+    .attention{border-color:#e7b54a;background:#fffaf0}.form-rules input[type=checkbox]{width:auto;margin:0 auto}.form-rules td:not(:first-child),.form-rules th:not(:first-child){text-align:center}
+    .bell{position:relative;display:inline-flex;align-items:center;gap:6px}.bell svg{width:18px;height:18px}.bell-count{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--red);color:white;font-size:12px;line-height:20px;font-weight:700;text-align:center;box-shadow:0 0 0 2px #163b4c}
+    .notify-panel{position:absolute;top:72px;right:16px;z-index:30;width:min(380px,calc(100vw - 32px));max-height:70vh;overflow:auto;background:white;color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px #18384c33;padding:14px 16px}.notify-head h2{margin:0}.notify-list{list-style:none;margin:10px 0 0;padding:0}.notify-item{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.notify-item p{margin:2px 0}.notify-dot{flex:0 0 10px;height:10px;border-radius:50%;margin-top:7px;background:var(--green)}.notify-item.down .notify-dot{background:var(--red)}.notify-item.action .notify-dot{background:#c98a00}.notify-item.fresh{background:#f3faf7;margin:0 -16px;padding:10px 16px}
+    .classroom-top{margin:8px 0 18px}.classroom-top h1{margin:0}.classroom-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}.classroom-panel{position:sticky;top:12px}.classroom-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}.classroom-tools select{width:auto;min-width:180px}.classroom-count{margin-left:auto;color:var(--green)}
+    .seat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:10px}.seat{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:96px;padding:12px;border:2px solid var(--line);border-radius:12px;background:white;color:var(--ink);text-align:left;font-weight:400}.seat.selected{border-color:var(--green);background:#e8f5f1;box-shadow:0 0 0 2px #147c6933}.seat-name{font-weight:700;font-size:16px}.seat-meta{font-size:12px;color:var(--muted)}.seat-total{margin-top:auto;font-size:22px;color:var(--green)}.seat-flash{position:absolute;top:8px;right:10px;font-weight:800;color:var(--green);animation:seatflash 2.6s ease-out forwards}.seat-flash.neg{color:var(--red)}@keyframes seatflash{0%{opacity:1;transform:translateY(0)}70%{opacity:1}100%{opacity:0;transform:translateY(-14px)}}
+    .field-title{font-weight:700;margin:14px 0 8px}.chip-row{display:flex;flex-wrap:wrap;gap:8px}.chip{border-radius:20px;padding:6px 12px;background:#e7eff0;color:var(--ink);font-weight:600}.chip.active{background:var(--green);color:white}.point-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.point-buttons button{font-size:20px;padding:12px 0}.classroom-panel.deduct .point-buttons button{background:var(--red)}.classroom-log{list-style:none;padding:0;margin:0}.classroom-log li{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--line);padding:8px 0;font-size:13px}.classroom-log li.undone span:first-child{color:var(--muted);text-decoration:line-through}.classroom-log button,.classroom-log .badge{flex-shrink:0;white-space:nowrap}
+    @media(max-width:900px){.classroom-layout{grid-template-columns:minmax(0,1fr) 260px;gap:12px}.seat-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}.point-buttons button{font-size:17px}}
+    @media(max-width:680px){.classroom-layout{grid-template-columns:1fr}.classroom-panel{position:sticky;top:auto;bottom:0;z-index:5;max-height:56vh;overflow:auto;margin-bottom:0;box-shadow:0 -8px 24px #18384c26}}
+    .weekly-scroll{max-height:70vh;overflow:auto;border:1px solid var(--line);border-radius:12px}.weekly-table thead th,.weekly-table tfoot th,.weekly-table tfoot td{position:sticky;z-index:2;background:#f7fafa}.weekly-table thead th{top:0}.weekly-table tfoot th,.weekly-table tfoot td{bottom:0}.weekly-table thead th:first-child,.weekly-table tfoot th:first-child{z-index:3}
+    .teacher-tabs{position:relative;margin:0 0 16px}.scroll-pane{max-height:min(70vh,760px);overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.roster-pane{max-height:min(62vh,680px);border:1px solid var(--line);border-radius:12px}.roster-pane thead th{position:sticky;top:0;z-index:1}
+    .queue-filters{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:4px 0 12px}.queue-filters label{margin:0;flex:1;min-width:150px;max-width:260px}.queue-filters select{margin-top:4px}.batch-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:12px;background:#f7fafa}.batch-bar label.check{margin:0;font-weight:650}.batch-bar input#batchNote{flex:1;min-width:220px;width:auto}.batch-actions{margin:0}.batch-actions button{padding:8px 13px}.queue-list{padding:4px 10px 4px 4px;border:1px solid var(--line);border-radius:12px;background:white}.queue-detail{border:1px solid var(--line);border-radius:12px;background:white;padding:18px}.queue-row{display:flex;align-items:center;gap:8px}.queue-row input{width:22px;height:22px;flex:0 0 22px;margin:0 0 0 6px}.queue-row .queue-item{margin:6px 0}.queue-row.checked .queue-item{background:#e3f1ec}.waive-check{margin:8px 0;color:#9a5b00;font-weight:650;flex-basis:100%}.receipt-pane{max-height:min(62vh,680px);border:1px solid var(--line);border-radius:12px}.receipt-pane thead th{position:sticky;top:0;z-index:1}.receipt-filters input{margin-top:4px}
+    .scratch-student.has-cards{border:2px solid #e0b400;background:linear-gradient(135deg,#fffaf0,#ffffff)}.scratch-student h2 .badge{margin-left:8px;vertical-align:middle}.scratch-tickets{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}.scratch-ticket{display:flex;flex-direction:column;gap:4px;text-align:left;background:linear-gradient(135deg,#ffd45e,#ffa046);color:#3b2600;border-radius:14px;padding:14px 16px;box-shadow:0 3px 0 #c97a1a}.scratch-ticket-title{font-size:20px;font-weight:800}.scratch-ticket-cta{margin-top:6px;font-weight:750;text-decoration:underline}.scratch-opened{margin:8px 0;padding-left:20px}.scratch-range{display:flex;flex-wrap:wrap;gap:10px;align-items:end}.scratch-range label{margin:0;flex:0 1 130px;min-width:100px}.scratch-range .scratch-note-field{flex:1 1 220px}.scratch-dialog{width:min(460px,94vw)}.scratch-play{text-align:center}.scratch-play .actions{justify-content:center}.scratch-note{font-weight:650;margin:0}.scratch-area{position:relative;height:180px;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#fff3c4,#ffd56b);margin:12px 0;-webkit-user-select:none;user-select:none}.scratch-prize{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:8px;color:#7a3e00;font-size:22px;font-weight:700}.scratch-prize strong{font-size:64px;line-height:1}.scratch-area canvas{position:absolute;top:0;left:0;width:100%;height:100%;touch-action:none;cursor:pointer;transition:opacity .5s}.scratch-area.revealed canvas{opacity:0;pointer-events:none}.scratch-area.revealed .scratch-prize strong{animation:scratchPop .6s ease-out}@keyframes scratchPop{0%{transform:scale(.6)}60%{transform:scale(1.2)}100%{transform:scale(1)}}.classroom-panel.scratch{border-top:4px solid #ffa046}.scratch-teacher{border-top:1px solid var(--line);padding-top:12px}.receipt-pane td.receipt-student{white-space:nowrap}
+    .history-item{border-top:1px solid var(--line);padding:14px 4px}.history-item:first-child{border-top:0}.history-item .row{align-items:flex-start}.history-item details{margin-top:8px}.history-table td,.history-table th{padding:8px}.history-list{margin-top:8px}
+    .app-footer{background:#163b4c;color:white;margin-top:12px}.app-footer .wrap{padding-top:12px;padding-bottom:12px}.app-footer button{font-size:13px;padding:7px 12px}
+    body.embedded header .wrap{padding-top:72px}body.embedded .notify-panel{top:126px}
+    @media(max-width:760px){.queue-filters label{max-width:none;min-width:130px}.batch-bar input#batchNote{min-width:100%}.queue-list.scroll-pane{max-height:300px}.queue-detail{padding:14px}.teacher-tabs button{padding:7px 10px}}
+  </style>
 </head>
-<body><main><h1>點數銀行</h1><p>新版網頁準備中。</p><p><a href="https://sites.google.com/view/weivibelab/%E9%BB%9E%E6%95%B8%E9%8A%80%E8%A1%8C">前往點數銀行</a></p></main></body>
+<body>
+  <header><div class="wrap"><div><div class="eyebrow">POINT BANK · 多帳號相容版 5.8</div><div class="brand" id="brand">點數銀行</div></div><div class="actions nav" id="nav" style="margin:0"></div></div></header>
+  <div id="notifyPanel" class="notify-panel" role="dialog" aria-label="通知" hidden></div>
+  <div id="message" class="banner" role="status" aria-live="polite" hidden></div>
+  <main class="wrap" id="app"><div class="loading">正在連接點數銀行…</div></main>
+  <footer id="appFooter" class="app-footer" hidden></footer>
+  <dialog id="imagePreview" class="image-preview" aria-labelledby="previewTitle" aria-describedby="previewHint">
+    <div class="preview-shell">
+      <div class="preview-header"><h2 id="previewTitle">圖片預覽</h2><span id="previewCount" class="muted small"></span><button type="button" class="secondary" data-action="previewClose" autofocus>關閉 ✕</button></div>
+      <div class="preview-toolbar"><button type="button" id="previewPrev" class="secondary" data-action="previewPrev">上一張</button><button type="button" id="previewNext" class="secondary" data-action="previewNext">下一張</button><button type="button" id="previewZoomOut" class="secondary" data-action="previewZoomOut" aria-label="縮小圖片">－</button><output id="previewScale" aria-live="polite">—</output><button type="button" id="previewZoomIn" class="secondary" data-action="previewZoomIn" aria-label="放大圖片">＋</button><button type="button" id="previewFit" class="secondary" data-action="previewFit">符合視窗</button><button type="button" id="previewActual" class="secondary" data-action="previewActual">原始大小</button><button type="button" id="previewDownload" class="secondary" data-action="downloadAttachment">下載原檔</button></div>
+      <p id="previewStatus" class="preview-status" role="status" aria-live="polite">準備載入圖片…</p>
+      <div id="previewStage" class="preview-stage" hidden><div class="preview-canvas"><img id="previewImage" class="preview-image" alt="附件圖片" draggable="false"></div></div>
+      <p id="previewHint" class="preview-hint">放大後可拖曳圖片或捲動查看；雙擊切換原始大小／符合視窗。鍵盤 ← → 切換，＋／－縮放，Esc 關閉。</p>
+    </div>
+  </dialog>
+  <dialog id="pointStats" class="stats-dialog" aria-labelledby="pointStatsTitle"><div class="stats-dialog-header"><h2 id="pointStatsTitle">學生點數統計與獎品參考</h2><button type="button" class="secondary" data-action="closePointStats" autofocus>關閉 ✕</button></div><div id="pointStatsBody" class="stats-dialog-body"></div></dialog>
+  <dialog id="submissionProgress" class="submission-progress" aria-labelledby="submissionTitle"><section><div class="eyebrow muted">POINT BANK · 收件進度</div><h1 id="submissionTitle">正在保存申請</h1><p id="submissionDetail" role="status" aria-live="polite"></p><progress id="submissionBar" max="1" value="0"></progress><p id="submissionCounter" class="muted"></p><p id="submissionElapsed" role="timer">已等待 0 秒</p><p id="submissionEstimate" class="muted small" aria-live="polite"></p><p id="submissionReceipts" class="file-note"></p><p class="muted small">附件尚未完整上傳前，請暫時保留此頁面，避免中斷傳送。已保存的內容可在收件進度找回，請勿重複建立相同申請。</p></section></dialog>
+  <dialog id="recordEditDialog" class="stats-dialog record-edit-dialog" aria-labelledby="recordEditTitle"><div class="stats-dialog-header"><h2 id="recordEditTitle">修改審核中的申請</h2><button type="button" class="secondary" data-action="closeRecordEdit">關閉 ✕</button></div><div id="recordEditBody" class="stats-dialog-body"></div></dialog>
+  <dialog id="receiptDialog" class="stats-dialog" aria-labelledby="receiptTitle"><div class="stats-dialog-header"><h2 id="receiptTitle">收件進度</h2><button type="button" class="secondary" data-action="receiptClose" autofocus>關閉 ✕</button></div><div id="receiptBody" class="stats-dialog-body"></div></dialog>
+  <dialog id="scratchDialog" class="stats-dialog scratch-dialog" aria-labelledby="scratchTitle"><div class="stats-dialog-header"><h2 id="scratchTitle">刮刮樂</h2><button type="button" class="secondary" data-action="scratchClose">關閉 ✕</button></div><div id="scratchBody" class="stats-dialog-body"></div></dialog>
+  <script>
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const state = {config:{name:'點數銀行',register:true},token:'',me:null,home:null,detail:null,authTab:'login',passwordView:false,busy:false,search:'',sortMode:'classAsc',pointStats:{className:'',includeInactive:false,threshold:''},studentId:null,reviewId:null,submitKey:null,adjustKey:null,view:'home',queueFilter:'',queueClass:'',queueCategory:'',queueStatus:'pending',queueSelected:[],batchNote:'',batchWaive:false,receiptSearch:'',receiptState:'',scratchView:null,detailScratchKey:null,teacherTab:'',reviewFrom:'',history:null,historyFilter:{className:'',studentId:'',status:''},resuming:false,submissionSent:false,pointDrafts:[],draftCounter:0,stagedSending:false,receiptView:null};
+  try { state.token = sessionStorage.getItem('pbToken') || ''; } catch (_) {}
+  const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function notify(text,error=false){$('message').textContent=text;$('message').className='banner'+(error?' error':'');$('message').hidden=!text;}
+  function setToken(token){state.token=token;try{token?sessionStorage.setItem('pbToken',token):sessionStorage.removeItem('pbToken');}catch(_){} }
+  /* v5.8：在 Google 的 GAS 頁面照舊用 google.script.run；放在其他網站（GitHub Pages）時改用 fetch 呼叫同一個 API（doPost）。
+     fetch 用 text/plain 避免 CORS 預檢，credentials:'omit' 不帶 Google 登入資料，所以手機登入多個 Google 帳號也能使用。 */
+  const PB_API_URL='https:'+'/'+'/'+'script.google.com/macros/s/AKfycbwCG0CBw7-S0ld5GXO156r9vPPKRsvtAKG9wgNarn_bc0S3CgVIkMPjalcAcq2kwatf/exec';
+  const PB_FETCH_TIMEOUT=120000;
+  function onGasPage(){try{const g=window.google;return Boolean(g&&g.script&&g.script.run);}catch(_){return false;}}
+  function rpc(action,input={}){return onGasPage()?gasRpc(action,input):fetchRpc(action,input);}
+  function gasRpc(action,input){return new Promise((resolve,reject)=>{window.google.script.run.withSuccessHandler(r=>r&&r.ok?resolve(r.data):reject(new Error(r?.message||'伺服器回應異常。'))).withFailureHandler(e=>reject(new Error(e.message||'連線失敗，請稍後再試。'))).pointBankApi(action,input,state.token);});}
+  function fetchRpc(action,input){
+    if(typeof fetch!=='function')return Promise.reject(new Error('瀏覽器版本太舊，請更新後再試。'));
+    const ctrl=typeof AbortController==='function'?new AbortController():null,timer=ctrl?setTimeout(()=>ctrl.abort(),PB_FETCH_TIMEOUT):0;
+    return fetch(PB_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,input,token:state.token}),credentials:'omit',redirect:'follow',signal:ctrl?ctrl.signal:undefined})
+      .then(res=>res.text(),e=>{throw new Error(e&&e.name==='AbortError'?'連線逾時，請稍後再試。':'連線失敗，請稍後再試。');})
+      .then(text=>{let r;try{r=JSON.parse(text);}catch(_){throw new Error('伺服器回應異常，請稍後再試。');}if(r&&r.ok)return r.data;throw new Error(r?.message||'伺服器回應異常。');})
+      .finally(()=>{if(timer)clearTimeout(timer);});
+  }
+  async function task(fn){if(state.busy)return;state.busy=true;notify('處理中…');document.querySelectorAll('button,input,select,textarea').forEach(c=>{if(!c.disabled){c.dataset.busyDisabled='1';c.disabled=true;}});try{await fn();}catch(e){notify(e.message,true);}finally{state.busy=false;document.querySelectorAll('[data-busy-disabled]').forEach(c=>{c.disabled=false;delete c.dataset.busyDisabled;});if(state.me?.role==='學生'&&$('pointDraftList'))updatePointBatchButtons();}}
+  function key(){if(!window.crypto?.getRandomValues)throw new Error('瀏覽器不支援安全亂數，請更新 Chrome、Edge 或 Safari。');const bytes=new Uint8Array(18);crypto.getRandomValues(bytes);return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');}
+  function today(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+  function badge(s){return `<span class="badge ${s==='已核准'?'approved':['待審核','需補件'].includes(s)?'pending':['已退回','已作廢'].includes(s)?'rejected':''}">${esc(s)}</span>`;}
+  function pwMin(){return Number(state.config.passwordMin)||4;}
+  function field(label,id,type='text',value='',extra=''){return `<label for="${id}">${label}</label><input id="${id}" type="${type}" value="${esc(value)}" ${extra}>`;}
+  function stats(summary){return `<div class="stats"><div class="stat"><span>累積總點數</span><strong>${esc(summary.total)}</strong></div><div class="stat"><span>待審核筆數</span><strong>${esc(summary.pending)}</strong></div><div class="stat"><span>全部紀錄</span><strong>${esc(summary.count)}</strong></div></div>`;}
+  function clearLogin(){closeNotifications();if($('scratchDialog')?.open)$('scratchDialog').close();state.scratchView=null;state.detailScratchKey=null;state.teacherTab='';state.queueClass='';state.queueCategory='';state.queueStatus='pending';state.queueSelected=[];state.batchNote='';state.batchWaive=false;state.receiptSearch='';state.receiptState='';state.history=null;state.historyFilter={className:'',studentId:'',status:''};state.reviewFrom='';state.recordEdit=null;if($('recordEditDialog')?.open)$('recordEditDialog').close();state.classroom=null;state.pointGroups=[];state.formSettingsOpen=false;state.studentTab='weekly';state.weeklyTerm='';state.academicEditor=null;state.academicEditorOpen=false;if($('receiptDialog')?.open)closeReceiptView();state.stagedSending=false;stopSubmissionClock();if($('submissionProgress')?.open)$('submissionProgress').close();state.pointDrafts=[];if($('pointStats')?.open)closePointStats();state.pointStats={className:'',includeInactive:false,threshold:''};state.sortMode='classAsc';if($('imagePreview')?.open)closeImagePreview();setToken('');state.me=null;state.home=null;state.detail=null;state.studentId=null;state.passwordView=false;state.submitKey=null;state.adjustKey=null;state.view='home';state.queueFilter='';state.resuming=false;state.submissionSent=false;}
+  function renderNav(){const me=state.me;renderFooter();$('nav').innerHTML=me?`${bellHtml()}<span class="small">${esc(me.name)} · ${esc(me.role)}</span><button class="secondary" data-action="refresh">重新整理</button><button class="secondary" data-action="password">更換密碼</button><button class="secondary" data-action="logout">登出</button>`:'';}
+  function acceptSnapshot(snapshot){state.config=snapshot.config||state.config;state.me=snapshot.me;state.home=snapshot.home||null;state.detail=snapshot.detail||null;}
+  async function load(){acceptSnapshot(await rpc('dashboard',{studentId:state.view==='home'?state.studentId:null}));state.academicEditor=null;state.submitKey=null;state.resuming=false;state.submissionSent=false;render();}
+  function render(){ $('brand').textContent=state.config.name;renderNav();if(!state.me){renderAuth();return;}if(state.me.mustChange||state.passwordView){renderPassword();return;}if(state.me.role==='學生')renderStudent();else if(state.view==='classroom')renderClassroom();else{if(state.view==='queue'){state.view='home';state.teacherTab='queue';}renderTeacher();}}
+  function renderAuth(){const register=state.authTab==='register'&&state.config.register;$('app').innerHTML=`<section class="card auth"><div class="eyebrow muted">每一份努力，都值得存下來</div><h1>${register?'建立學生帳號':'歡迎回到點數銀行'}</h1><p class="muted">${register?(state.config.requireCode===false?'填寫班級、姓名與登入帳密，建立自己的點數存摺。':'向教師取得註冊碼，建立自己的點數存摺。'):'學生與教師使用同一個入口登入。'}</p><form id="auth-form">${register?field('班級','className','text','','required maxlength="40" autocomplete="organization"')+field('座號','number','text','','required maxlength="12"')+field('姓名','name','text','','required maxlength="40" autocomplete="name"')+(state.config.attendance?.enabled?field(esc(termName(state.config.attendance.current))+'出席堂數（每週）','attendance','number','',`required min="${state.config.attendance.min}" max="${state.config.attendance.max}" step="1" inputmode="numeric"`)+'<p class="muted small">請依教師說明填寫本學期每週的出席堂數（整數），目前不影響點數。</p>':'')+(state.config.requireCode===false?'':field('學生註冊碼','code','text','','required autocomplete="off"')):''}${field('登入帳號','username','text','','required minlength="4" maxlength="32" pattern="[A-Za-z0-9_-]{4,32}" autocomplete="username" autocapitalize="none"')}<p class="muted small">4–32 位英數字、底線或減號，不分大小寫。</p>${field('密碼','password','password','',`required ${register?'minlength="'+pwMin()+'" maxlength="72" autocomplete="new-password"':'autocomplete="current-password"'}`)}${register?field('再次輸入密碼','passwordConfirm','password','','required minlength="'+pwMin()+'" maxlength="72" autocomplete="new-password"'):''}<p class="muted small">${register?'至少 '+pwMin()+' 字。忘記密碼時由教師重設。':'忘記密碼？請直接聯絡教師協助重設。'}</p><div class="actions"><button type="submit">${register?'建立帳號':'登入'}</button>${state.config.register?`<button type="button" class="secondary" data-action="authTab">${register?'返回登入':'學生註冊'}</button>`:''}</div></form></section>`;}
+  function renderPassword(){$('app').innerHTML=`<section class="card auth"><h1>更換密碼</h1><p class="muted">${state.me.mustChange?'你正在使用臨時密碼，請先設定自己的新密碼。':'更新後會登出所有已登入的裝置。'}</p><form id="password-form">${field('目前密碼','oldPassword','password','','required autocomplete="current-password"')}${field('新密碼（至少 '+pwMin()+' 字）','newPassword','password','','required minlength="'+pwMin()+'" maxlength="72" autocomplete="new-password"')}${field('再次輸入新密碼','confirmPassword','password','','required minlength="'+pwMin()+'" maxlength="72" autocomplete="new-password"')}<div class="actions"><button type="submit">更新密碼</button>${state.me.mustChange?'':'<button type="button" class="secondary" data-action="cancelPassword">返回</button>'}</div></form></section>`;}
+  /* v5.4：老師還沒處理（待審核、處理中）的申請，學生可自行修改點數／週次／說明或刪除。 */
+  const STUDENT_DELETED='學生自行刪除';
+  function studentEditable(r){return ['待審核','處理中'].includes(r['審核狀態'])&&r['項目ID']!=='TEACHER_ADJUST';}
+  function recordOwnerActions(r){return studentEditable(r)?`<div class="record-actions"><button type="button" class="secondary" data-action="editRecord" data-id="${esc(r['紀錄ID'])}">修改</button><button type="button" class="secondary" data-action="deleteRecord" data-id="${esc(r['紀錄ID'])}">刪除</button></div>`:'';}
+  function teacherNoteHtml(r){if(!r['教師備註'])return '';return r['審核狀態']==='已作廢'&&r['教師備註']===STUDENT_DELETED?'<div class="muted">學生已自行刪除</div>':`<div class="muted">教師：${esc(r['教師備註'])}</div>`;}
+  function recordsTable(records,teacher=false){if(!records.length)return '<div class="empty">目前還沒有點數紀錄。</div>';return `<div class="table-scroll"><table><thead><tr><th>週次起始日</th><th>項目</th><th>申請／核定</th><th>狀態</th><th>說明與教師回覆</th>${teacher?'<th>操作</th>':''}</tr></thead><tbody>${records.map(r=>`<tr><td>${esc(r['週次起始日'])}${(teacher?weekFullText(r):r.calendar?academicLabel(r.calendar):'')?`<br><span class="small muted">${esc(teacher?weekFullText(r):academicLabel(r.calendar))}</span>`:''}</td><td>${esc(r['項目名稱快照'])}</td><td>${esc(r['申請點數'])} / ${r['核定點數']===''?'—':esc(r['核定點數'])}</td><td>${badge(r['審核狀態'])}${teacher?'':recordOwnerActions(r)}</td><td class="note">${esc(r['學生說明'])}${attachmentHtml(r,teacher)}${teacherNoteHtml(r)}</td>${teacher?`<td><button class="secondary" data-action="review" data-id="${esc(r['紀錄ID'])}">審核／修改</button></td>`:''}</tr>`).join('')}</tbody></table></div>`;}
+  function renderStudent(){restorePointProgress();const h=state.home,s=h.student;$('app').innerHTML=`<div class="hero"><div class="muted">${esc(s['班級'])} · ${esc(s['座號'])} 號</div><h1>${esc(s['姓名'])}的點數存摺</h1><p class="muted">總點數只計入教師已核准的紀錄。</p></div>${stats(h.summary)}${studentScratchHtml(h)}${attendanceMissing()?`<section class="card attention"><h2>請先填寫本學期出席堂數（每週）</h2>${attendanceFormHtml(h.attendance,'儲存出席堂數')}</section>`:''}<section class="card"><h2>存入本週的努力</h2>${pointBatchFormHtml(h)}</section><section class="card"><h2>我的個人頁面</h2><p>${esc(s['班級'])} / ${esc(s['座號'])} 號 / ${esc(s['姓名'])}</p><p class="muted small">姓名、班級與座號如需更正，請聯絡教師。</p>${h.attendance&&h.attendance.value!==null?`<details><summary>${esc(termName(h.attendance))}出席堂數（每週）：${esc(h.attendance.value)} 堂（點此修改）</summary>${attendanceFormHtml(h.attendance,'更新出席堂數')}</details>`:''}<form id="profile-form"><label for="bio">個人介紹</label><textarea id="bio" maxlength="500">${esc(s['個人介紹'])}</textarea><div class="actions"><button type="submit" class="secondary">儲存個人介紹</button></div></form><details><summary>忘記舊帳號？申請連結原有點數</summary><p class="muted">教師確認後，新帳號與這裡的點數會併入原有資料，之後需重新登入。</p><form id="link-form">${field('原班級','linkClass','text',s['班級'],'required maxlength="40"')}${field('原座號','linkNumber','text',s['座號'],'required maxlength="12"')}${field('原姓名','linkName','text',s['姓名'],'required maxlength="40"')}<label for="linkNote">說明</label><textarea id="linkNote" required maxlength="1000" placeholder="例如：原帳號忘記密碼，老師可協助確認身分"></textarea><div class="actions"><button type="submit" class="secondary">送出連結申請</button></div></form></details>${h.links.length?`<details><summary>連結申請紀錄（${h.links.length}）</summary>${h.links.map(r=>`<p>${badge(r['處理狀態'])} ${esc(r['教師備註']||'等候教師處理')}</p>`).join('')}</details>`:''}</section>${studentTabsHtml(h)}`;}
+  function termName(t){return t.schoolYear+' 學年度'+(Number(t.semester)===2?'下':'上')+'學期';}
+  function attendanceFormHtml(a,label){const range=state.config.attendance||{min:1,max:200};return `<form id="attendance-form">${field(esc(termName(a))+'出席堂數（每週）','attendanceValue','number',a.value??'',`required min="${range.min}" max="${range.max}" step="1" inputmode="numeric"`)}<p class="muted small">請依教師說明填寫本學期每週的出席堂數（整數），每學期填一次。此資料是為了日後公平計算，目前不影響點數。</p><div class="actions"><button type="submit">${label}</button></div></form>`;}
+  const STUDENT_TABS=[['weekly','週次點數總覽'],['records','點數明細'],['receipts','收件紀錄']];
+  function studentTabsHtml(h){
+    const active=STUDENT_TABS.some(([k])=>k===state.studentTab)?state.studentTab:'weekly',hide=k=>k===active?'':'hidden';
+    const tabs=`<div class="student-tabs" role="tablist" aria-label="我的紀錄">${STUDENT_TABS.map(([k,label])=>`<button type="button" role="tab" id="studentTab-${k}" aria-controls="studentPanel-${k}" aria-selected="${k===active}" class="${k===active?'':'secondary'}" data-action="studentTab" data-id="${k}">${label}${k==='records'?`（${h.records.length}）`:''}</button>`).join('')}</div>`;
+    return tabs+`<div id="studentPanel-weekly" role="tabpanel" aria-labelledby="studentTab-weekly" ${hide('weekly')}><section class="card"><h2>週次點數總覽</h2><div id="weeklyOverview">${weeklyOverviewHtml(h)}</div></section></div><div id="studentPanel-records" role="tabpanel" aria-labelledby="studentTab-records" ${hide('records')}><section class="card"><h2>點數明細</h2>${recordsTable(h.records)}</section></div><div id="studentPanel-receipts" role="tabpanel" aria-labelledby="studentTab-receipts" ${hide('receipts')}>${receiptPanelHtml()}</div>`;
+  }
+  /* 切換頁籤只改顯示狀態，不重新 render，避免未儲存的個人介紹等輸入被清掉。 */
+  function switchStudentTab(tab){
+    if(!STUDENT_TABS.some(([k])=>k===tab))return;state.studentTab=tab;
+    for(const [k] of STUDENT_TABS){const button=$('studentTab-'+k),panel=$('studentPanel-'+k);if(!button||!panel)continue;const on=k===tab;button.className=on?'':'secondary';button.setAttribute('aria-selected',String(on));panel.hidden=!on;}
+  }
+  const termKey=t=>t.schoolYear+'-'+t.semester;
+  function weeklyTermChoice(terms){
+    const t=today(),current=academicCurrentClient(),wanted=state.weeklyTerm||termKey(current);
+    return terms.find(term=>termKey(term)===wanted)||[...terms].filter(term=>term.firstMonday<=t).sort((a,b)=>b.firstMonday.localeCompare(a.firstMonday))[0]||terms[0];
+  }
+  /* 已收件的週次快照優先；以日期提交的舊紀錄依所選學期的第一週換算，只用於顯示，不回寫紀錄。 */
+  function weeklyRecordWeek(r,term,mondays){
+    if(r.calendar)return Number(r.calendar.schoolYear)===term.schoolYear&&Number(r.calendar.semester)===term.semester&&Number(r.calendar.weekNumber)<=mondays.length?Number(r.calendar.weekNumber):0;
+    return mondays.indexOf(String(r['週次起始日']))+1;
+  }
+  function weeklyOverviewHtml(h){
+    const academic=state.config.academic,terms=academic?.enabled?academic.terms||[]:[];
+    if(!terms.length)return '<p class="muted spacer">教師尚未設定學期週次，暫時無法依週次統計；每筆紀錄仍可在「點數明細」查看。</p>';
+    const term=weeklyTermChoice(terms),label=t=>t.schoolYear+' 學年度'+(Number(t.semester)===2?'下學期':'上學期'),end=academicEnd(term.schoolYear,term.semester),start=Number(term.semester)===2?(term.schoolYear+1912)+'-02-01':(term.schoolYear+1911)+'-08-01';
+    const mondays=[];for(let w=1;w<=(academic.maxWeeks||21);w++){const m=academicMonday(term.firstMonday,w);if(!m||m>end)break;mondays.push(m);}
+    const columns=(h.categories||[]).map(c=>({id:c['項目ID'],name:c['項目名稱']})),cells={},pendingStates=['處理中','待審核','需補件'];let outside=0;
+    for(const r of h.records){
+      const week=weeklyRecordWeek(r,term,mondays),id=r['項目ID'];
+      if(!week){const d=String(r['週次起始日']);if(!r.calendar&&d>=start&&d<=end)outside++;continue;}
+      if(!columns.some(c=>c.id===id))columns.push({id,name:id==='TEACHER_ADJUST'?'教師調整':r['項目名稱快照']||id});
+      const cell=cells[week+'|'+id]||={approved:0,hasApproved:false,pending:0};
+      if(r['審核狀態']==='已核准'){cell.approved+=Number(r['核定點數'])||0;cell.hasApproved=true;}else if(pendingStates.includes(r['審核狀態']))cell.pending++;
+    }
+    const adjust=columns.findIndex(c=>c.id==='TEACHER_ADJUST');if(adjust>=0)columns.push(columns.splice(adjust,1)[0]);
+    const num=n=>n<0?`<span class="neg">${n}</span>`:String(n),t=today(),colTotal={};let grand=0;
+    const rows=mondays.map((m,i)=>{
+      const week=i+1;let rowTotal=0,rowHas=false;
+      const tds=columns.map(c=>{const cell=cells[week+'|'+c.id];if(!cell)return '<td><span class="weekly-none">—</span></td>';if(cell.hasApproved){rowTotal+=cell.approved;rowHas=true;colTotal[c.id]=(colTotal[c.id]||0)+cell.approved;}return `<td>${cell.hasApproved?`<strong>${num(cell.approved)}</strong>`:''}${cell.pending?`<span class="weekly-pending">審核中 ${cell.pending} 筆</span>`:''}</td>`;}).join('');
+      grand+=rowTotal;const cls=m<=t&&t<academicMonday(m,2)?'current':m>t?'future':'';
+      return `<tr class="${cls}"><th scope="row">第 ${week} 週<span class="small">${m.slice(5).replace('-','/')}${cls==='current'?' · 本週':''}</span></th>${tds}<td class="weekly-total">${rowHas?`<strong>${num(rowTotal)}</strong>`:'<span class="weekly-none">—</span>'}</td></tr>`;
+    }).join('');
+    const select=`<div class="weekly-tools"><label for="weeklyTerm">學期</label><select id="weeklyTerm">${terms.map(x=>`<option value="${termKey(x)}" ${termKey(x)===termKey(term)?'selected':''}>${label(x)}</option>`).join('')}</select></div>`;
+    const note=`<p class="muted small">數字為教師已核准的點數；「審核中」是已送出、尚待教師審核的申請，核准後才計入。${outside?`另有 ${outside} 筆紀錄的日期不在本學期第 1～${mondays.length} 週內，未列入此表，可到「點數明細」查看。`:''}</p>`;
+    return select+note+`<div class="table-scroll weekly-scroll"><table class="weekly-table"><thead><tr><th>週次</th>${columns.map(c=>`<th>${esc(c.name)}</th>`).join('')}<th class="weekly-total">週合計</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><th scope="row">學期合計</th>${columns.map(c=>`<td>${num(colTotal[c.id]||0)}</td>`).join('')}<td class="weekly-total">${num(grand)}</td></tr></tfoot></table></div>`;
+  }
+  function renderRoster(){const q=state.search.toLowerCase(),students=sortStudents(state.home.students.filter(s=>[s['班級'],s['座號'],s['姓名'],s['學生ID']].join(' ').toLowerCase().includes(q)),state.sortMode);$('roster').innerHTML=students.length?`<div class="table-scroll"><table><thead><tr><th>班級</th><th>座號</th><th>姓名</th><th>總點數</th><th>待審核</th>${state.config.attendance?.enabled?'<th>本學期每週堂數</th>':''}<th>狀態</th></tr></thead><tbody>${students.map(s=>`<tr><td>${esc(s['班級'])}</td><td>${esc(s['座號'])}</td><td><button class="link" data-action="openStudent" data-id="${esc(s['學生ID'])}">${esc(s['姓名'])}</button></td><td><strong>${esc(s.total)}</strong></td><td><button class="link" data-action="openQueue" data-id="${esc(s['學生ID'])}">${esc(s.pending)}</button></td>${state.config.attendance?.enabled?`<td>${s.attendance==null?'<span class="muted">未填</span>':esc(s.attendance)}</td>`:''}<td>${esc(s['帳號狀態'])}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">沒有符合的學生。學生完成註冊後會出現在這裡。</div>';}
+  function detailHtml(){const d=state.detail,s=d.student;const request=state.home.links.find(r=>r['目前學生ID']===s['學生ID']);return `<section class="card"><div class="row"><h2>${esc(s['姓名'])} · 個人明細</h2><button class="secondary" data-action="closeStudent">關閉明細</button></div><p class="muted">${esc(s['班級'])} / ${esc(seatNo(s['座號']))} 號 · ${esc(s['帳號狀態'])}<br><span class="small">學生ID：${esc(s['學生ID'])}</span></p><p style="white-space:pre-wrap">${esc(s['個人介紹'])}</p>${d.attendance?teacherAttendanceHtml(d.attendance):''}${stats(d.summary)}${recordsTable(d.records,true)}<div id="reviewPanel">${reviewHtml('detail')}</div>${detailScratchHtml(d)}<div class="grid spacer"><div><h3>教師調整點數</h3><p class="muted small">正數為加分，負數為扣分；直接計入總點數。</p><form id="adjust-form">${field('調整點數','adjustPoints','number','','required step="1" min="-100000" max="100000"')}<label for="adjustNote">調整原因</label><textarea id="adjustNote" required maxlength="1000"></textarea><div class="actions"><button type="submit">新增調整</button></div></form></div><div><h3>學生登入帳號</h3><p class="muted small">重設後需告知學生臨時密碼；學生登入時會被要求更換。Google 登入本版未啟用。</p>${d.accounts.map(a=>`<form class="account account-form" data-id="${esc(a.id)}"><p class="small">來源：${esc(a.source)}${a.mustChange?' · 下次登入需換密碼':''}</p><label>登入帳號<input name="username" value="${esc(a.username)}" required pattern="[A-Za-z0-9_-]{4,32}"></label><label>帳號狀態<select name="status"><option ${a.status==='啟用'?'selected':''}>啟用</option><option ${a.status==='停用'?'selected':''}>停用</option></select></label><label>新臨時密碼（留白表示保留）<input name="password" type="password" minlength="${pwMin()}" maxlength="72" autocomplete="new-password"></label><label>修改原因<input name="reason" required maxlength="1000"></label><div class="actions"><button type="submit" class="secondary">儲存帳號設定</button></div></form>`).join('')}<details><summary>為此學生新增自訂登入帳號</summary><p class="muted small">直接連結這位學生，不會新增第二份點數資料。</p><form id="create-login-form">${field('新登入帳號','newUsername','text','','required pattern="[A-Za-z0-9_-]{4,32}"')}${field('臨時密碼','tempPassword','password','','required minlength="'+pwMin()+'" maxlength="72" autocomplete="new-password"')}${field('建立原因','createReason','text','','required maxlength="1000"')}<div class="actions"><button type="submit" class="secondary">新增登入帳號</button></div></form></details></div></div>${request?linkResolutionHtml(request):''}</section>`;}
+  function reviewSource(){return state.reviewFrom||'detail';}
+  function reviewHtml(where){if(!state.reviewId||(where&&where!==reviewSource()))return '';const r=currentReview();if(!r)return '';return `<section class="card spacer" style="background:#f7fafa"><h3>審核／修改：${esc(r['項目名稱快照'])}</h3><form id="review-form"><label for="reviewStatus">狀態</label><select id="reviewStatus"><option ${r['審核狀態']==='已核准'?'selected':''}>已核准</option><option ${r['審核狀態']==='需補件'?'selected':''}>需補件</option><option ${r['審核狀態']==='已退回'?'selected':''}>已退回</option><option ${r['審核狀態']==='已作廢'?'selected':''}>已作廢</option></select>${field('核定點數（核准時使用）','reviewPoints','number',r['核定點數']===''?r['申請點數']:r['核定點數'],`${['需補件','已退回','已作廢'].includes(r['審核狀態'])?'disabled':'required'} step="1" min="-100000" max="100000"`)}${needsWaiver(r)?'<label class="check waive-check"><input type="checkbox" id="reviewWaive">免附件核准：附件還沒傳完也直接核准（未傳完的附件會停止上傳）</label>':''}<label for="reviewNote">審核／修改原因（選填，學生可見）</label><textarea id="reviewNote" maxlength="1000">${esc(r['教師備註'])}</textarea><div class="actions"><button type="submit">${reviewSource()==='queue'?'儲存並處理下一筆':'儲存審核結果'}</button><button type="button" class="secondary" data-action="cancelReview">取消</button></div></form></section>`;}
+  function linkResolutionHtml(request){const s=state.detail.student;return `<div class="account spacer"><h3>處理帳號歸戶</h3><p class="muted">這個新帳號目前有 ${esc(state.detail.summary.total)} 點。核准後，該學生的全部帳號及點數紀錄會移到你選擇的原學生資料；本頁來源資料會停用。</p><form id="resolve-form" data-id="${esc(request['申請ID'])}"><label for="targetId">選擇原有的學生資料</label><select id="targetId"><option value="">請先選擇…</option>${state.home.students.filter(t=>t['學生ID']!==s['學生ID']&&t['帳號狀態']==='啟用').map(t=>`<option value="${esc(t['學生ID'])}">${esc(t['班級'])} / ${esc(t['座號'])} / ${esc(t['姓名'])}（${esc(t.total)} 點，ID ${esc(t['學生ID'].slice(-8))}）</option>`).join('')}</select><label for="resolveReason">處理原因</label><textarea id="resolveReason" required maxlength="1000"></textarea><div class="actions"><button type="submit" class="danger">確認身分後合併</button><button type="button" class="secondary" data-action="rejectLink" data-id="${esc(request['申請ID'])}">退回申請</button></div></form></div>`;}
+  document.addEventListener('input',e=>{if(scratchInput(e.target))return;if(e.target.id==='batchNote'){state.batchNote=e.target.value;return;}if(e.target.id==='classroomNote'){classroomState().note=e.target.value;return;}if(e.target.id==='classroomCustomPoints'){classroomState().custom=e.target.value;return;}if(e.target.id==='termFirstMonday'){if(state.academicEditor)state.academicEditor.firstMonday=e.target.value;renderAcademicPreview();return;}if(e.target.dataset?.pointGroup){updatePointGroupRow(e.target);return;}if(e.target.dataset?.pointDraft){updatePointDraftField(e.target);return;}if(e.target.id==='rewardThreshold'){state.pointStats.threshold=e.target.value;$('rewardResult').textContent=rewardThresholdResult(statsPopulation(),e.target.value);return;}if(e.target.id==='search'){state.search=e.target.value;renderRoster();}if(e.target.id==='receiptSearch'){state.receiptSearch=e.target.value;renderReceiptList();return;}if(['adjustPoints','adjustNote'].includes(e.target.id))state.adjustKey=null;});
+  document.addEventListener('change',e=>{if(queueChange(e.target))return;if(e.target.id==='classroomFilter'){const c=classroomState();c.filter=e.target.value;c.selected=[];renderClassroom();return;}if(e.target.id==='weeklyTerm'){state.weeklyTerm=e.target.value;if(state.home)$('weeklyOverview').innerHTML=weeklyOverviewHtml(state.home);return;}if(['termSchoolYear','termSemester'].includes(e.target.id)){selectAcademicEditor($('termSchoolYear').value,$('termSemester').value);return;}if(e.target.id==='reviewStatus'){const approve=e.target.value==='已核准';$('reviewPoints').required=approve;$('reviewPoints').disabled=!approve;return;}if(e.target.dataset?.pointGroup){updatePointGroupRow(e.target);return;}if(e.target.dataset?.pointDraft){updatePointDraftField(e.target);return;}if(e.target.id==='studentSort'){state.sortMode=e.target.value;renderRoster();return;}if(e.target.id==='statsClass'){state.pointStats.className=e.target.value;renderPointStats();return;}if(e.target.id==='statsIncludeInactive'){state.pointStats.includeInactive=e.target.checked;renderPointStats();return;}});
+  document.addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(!b)return;const action=b.dataset.action,id=b.dataset.id;
+    if(action==='studentTab'){switchStudentTab(id);return;}
+    if(action==='scratchOpen'){openScratch(id);return;}
+    if(action==='scratchRevealNow'){finishScratch();return;}
+    if(action==='scratchClose'){closeScratch();return;}
+    if(action==='scratchIssue'){sendClassroomScratch();return;}
+    if(action==='scratchRetry'){const c=classroomState();if(c.scratchPending)submitScratch(c.scratchPending);return;}
+    if(action==='scratchRevokeKey'){revokeScratchAction(id);return;}
+    if(action==='detailScratchIssue'){sendDetailScratch();return;}
+    if(action==='detailScratchRevoke'){revokeDetailScratch(id);return;}
+    if(action==='saveScratchSettings'){saveScratchSettings();return;}
+    if(action==='receiptOpen'){task(async()=>{const data=await rpc('receiptStatus',{receiptNo:id});acceptReceipt(data);renderReceiptView(data);$('receiptDialog').showModal();scheduleReceiptPoll();notify('');});return;}
+    if(action==='receiptClose'){closeReceiptView();return;}
+    if(action==='editRecord'){openRecordEdit(id);return;}
+    if(action==='closeRecordEdit'){closeRecordEdit();return;}
+    if(action==='deleteRecord'){deletePendingRecord(id);return;}
+    if(action==='receiptLookup'){const number=$('receiptLookup').value.trim();if(!number){notify('請輸入收件編號。',true);return;}task(async()=>{const data=await rpc('receiptStatus',{receiptNo:number});acceptReceipt(data);renderReceiptView(data);if(!$('receiptDialog').open)$('receiptDialog').showModal();scheduleReceiptPoll();notify('');});return;}
+    if(action==='receiptRefresh'||action==='receiptRecover'){const number=state.receiptView?.receiptNo;if(!number)return;task(async()=>{$('receiptNotice').textContent=action==='receiptRecover'?'正在檢核伺服器已收到的附件…':'正在更新進度…';const data=await rpc(action==='receiptRecover'?'recheckReceipt':'receiptStatus',{receiptNo:number});acceptReceipt(data);renderReceiptView(data);scheduleReceiptPoll();notify('收件進度已更新。');});return;}
+    if(action==='notifications'){state.notifyOpen?closeNotifications():openNotifications();return;}
+    if(action==='notifyClose'){closeNotifications();return;}
+    if(action==='notifyRecords'){closeNotifications();if(state.me?.role==='學生'){switchStudentTab('records');$('studentTab-records')?.scrollIntoView?.({behavior:'smooth',block:'start'});}return;}
+    if(action==='openClassroom'){state.view='classroom';state.reviewId=null;render();notify('');return;}
+    if(action==='closeClassroom'){state.view='home';render();return;}
+    if(action==='classroomToggle'){toggleClassroomStudent(id);return;}
+    if(action==='classroomSelectAll'){const c=classroomState();c.selected=classroomVisible().map(s=>s['學生ID']);renderClassroom();return;}
+    if(action==='classroomClear'){classroomState().selected=[];renderClassroom();return;}
+    if(action==='classroomMode'){const c=classroomState();c.mode=['deduct','scratch'].includes(id)?id:'add';renderClassroom();return;}
+    if(action==='classroomCategory'){classroomState().categoryId=id;renderClassroom();return;}
+    if(action==='classroomAward'){sendClassroomAward(id);return;}
+    if(action==='classroomRetry'){const pending=classroomState().pending;if(pending)submitClassroomAward(pending);return;}
+    if(action==='classroomUndo'){undoClassroomAction(id);return;}
+    if(action==='classroomGroupUpdate'){saveClassroomGroup(id);return;}
+    if(action==='classroomGroupDelete'){deleteClassroomGroup(id);return;}
+    if(action==='addPointGroup'){if(state.busy||!formRules().multiWeek)return;if(state.pointGroups.length>=5){notify('一次最多新增 5 週，請先送出後再繼續。',true);return;}state.pointGroups.push(newPointGroup());renderPointGroups();return;}
+    if(action==='removePointGroup'){if(state.busy)return;state.pointGroups=state.pointGroups.filter(g=>g.id!==id);renderPointGroups();return;}
+    if(action==='confirmAcademicDate'){const g=state.pointGroups?.find(g=>g.id===id);if(g){syncAcademicDraft(g,false);$('groupDate-'+g.id).innerHTML=academicDateFields(g,'');return;}const d=state.pointDrafts.find(d=>d.id===id);if(d&&!d.locked&&!d.resumeOnly){capturePointDraftInputs();syncAcademicDraft(d,false);d.key=null;d.payload=null;d.status='draft';d.message='';renderPointDrafts();}return;}
+    if(action==='selectAcademicTerm'){selectAcademicEditor(b.dataset.year,b.dataset.semester);return;}
+    if(action==='addPointDraft'){if(state.busy)return;capturePointDraftInputs();if(state.pointDrafts.length>=pointBatchLimits().maxEntries){notify('每批最多 10 筆，請先送出或收起部分項目。',true);return;}state.pointDrafts.push(newPointDraft());renderPointDrafts();return;}
+    if(action==='removePointDraft'){if(state.busy)return;capturePointDraftInputs();const draft=state.pointDrafts.find(d=>d.id===id);state.pointDrafts=state.pointDrafts.filter(d=>d.id!==id);renderPointDrafts();if(draft?.locked||draft?.resumeOnly)notify('已從表單收起；若先前已建立點數紀錄，紀錄仍保留在下方明細。');return;}
+    if(action==='openPointStats'){openPointStats();return;}
+    if(action==='closePointStats'){closePointStats();return;}
+    if(action==='previewOpen'){openImagePreview(id,b.dataset.record,b);return;}
+    if(action==='previewClose'){closeImagePreview();return;}
+    if(action==='previewPrev'){showPreviewImage(preview.index-1);return;}
+    if(action==='previewNext'){showPreviewImage(preview.index+1);return;}
+    if(action==='previewZoomIn'){zoomPreview(preview.scale*1.25);return;}
+    if(action==='previewZoomOut'){zoomPreview(preview.scale/1.25);return;}
+    if(action==='previewFit'){fitPreview();return;}
+    if(action==='previewActual'){zoomPreview(1);return;}
+    if(action==='openQueue'||action==='queueShowProcessing'){state.view='home';state.teacherTab='queue';state.queueStatus=action==='openQueue'?'pending':'processing';state.queueFilter=id||'';state.queueClass='';state.queueCategory='';state.queueSelected=[];state.reviewId=null;state.reviewFrom='queue';render();notify('');return;}
+    if(action==='receiptLoadAll'){task(async()=>{const r=await rpc('receiptList');state.home.receipts=r.receipts;state.home.receiptTotal=r.receipts.length;if($('teacherPanel-receipts'))$('teacherPanel-receipts').innerHTML=receiptPanelHtml();notify('已載入全部 '+r.receipts.length+' 批收件。');});return;}
+    if(action==='receiptClearFilters'){state.receiptSearch='';state.receiptState='';if($('receiptSearch'))$('receiptSearch').value='';if($('receiptState'))$('receiptState').value='';renderReceiptList();return;}
+    if(action==='closeQueue'){switchTeacherTab('students');return;}
+    if(action==='queueSelect'){state.reviewId=id;state.reviewFrom='queue';renderQueue();return;}
+    if(action==='teacherTab'){switchTeacherTab(id);return;}
+    if(action==='queueClearFilters'){state.queueFilter='';state.queueClass='';state.queueCategory='';state.queueSelected=[];renderQueue();return;}
+    if(action==='batchClear'){state.queueSelected=[];renderQueue();return;}
+    if(action==='batchReview'){runBatchReview(id);return;}
+    if(action==='historyRefresh'){loadHistory();return;}
+    if(action==='historyRevert'){const a=state.history?.actions.find(a=>a.key===id);if(a)revertHistory(historyVisibleRecords(a));return;}
+    if(action==='historyRevertOne'){const r=state.history?.actions.flatMap(a=>a.records).find(r=>r['紀錄ID']===id);if(r)revertHistory([r]);return;}
+    if(action==='scrollTop'){try{window.scrollTo(0,0);}catch(_){}return;}
+    if(action==='downloadAttachment'){task(async()=>{const f=await rpc('attachmentDownload',{attachmentId:id});const binary=atob(f.data),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));const url=URL.createObjectURL(new Blob([bytes],{type:'application/octet-stream'}));const a=document.createElement('a');a.href=url;a.download=f.name;a.target='_self';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);notify('附件已準備下載。');});return;}
+    if(action==='supplementUpload'){if($('receiptDialog').open)closeReceiptView();startSupplementDraft(id);return;}
+    if(action==='resumeUpload'){if($('receiptDialog').open)closeReceiptView();resumePointDraft(id);return;}
+    if(action==='authTab'){state.authTab=state.authTab==='login'?'register':'login';notify('');render();return;}
+    if(action==='password'){state.passwordView=true;render();return;}
+    if(action==='cancelPassword'){state.passwordView=false;render();return;}
+    if(action==='closeStudent'){state.studentId=null;state.detail=null;state.reviewId=null;render();return;}
+    if(action==='review'){state.reviewId=id;state.reviewFrom='detail';if($('queueReviewPanel'))$('queueReviewPanel').innerHTML='';$('reviewPanel').innerHTML=reviewHtml('detail');$('reviewPanel').scrollIntoView({behavior:'smooth',block:'start'});return;}
+    if(action==='cancelReview'){state.reviewId=null;$('reviewPanel').innerHTML='';return;}
+    if(action==='logout'){task(async()=>{try{await rpc('logout');}finally{clearLogin();render();notify('已登出。');}});return;}
+    if(action==='refresh'){task(async()=>{await load();if(state.me?.role==='教師'&&teacherTabActive()==='history'){state.history=await rpc('reviewHistory');renderHistory();}notify('資料已更新。');});return;}
+    if(action==='openStudent'){if($('receiptDialog').open)closeReceiptView();state.view='home';state.teacherTab='students';task(async()=>{state.studentId=id;state.reviewId=null;state.adjustKey=null;state.detail=await rpc('studentDetail',{studentId:id});renderTeacher();notify('');$('detail').scrollIntoView({behavior:'smooth',block:'start'});});return;}
+    if(action==='rejectLink'){const reason=$('resolveReason').value.trim();if(!reason){notify('請填寫處理原因。',true);return;}task(async()=>{const r=await rpc('resolveLink',{requestId:id,approve:false,reason});await load();notify(r.message);});}
+  });
+  document.addEventListener('submit',e=>{e.preventDefault();const form=e.target;if(!form.reportValidity())return;
+    if(form.id==='semester-settings-form'){const p={schoolYear:$('termSchoolYear').value,semester:$('termSemester').value,firstMonday:$('termFirstMonday').value,expectedRevision:state.academicEditor?.revision||''};if(!academicMonday(p.firstMonday,1)){notify('第一週基準必須是有效的星期一日期。',true);return;}task(async()=>{const r=await rpc('saveSemesterSettings',p);state.config=r.config;state.academicEditor=null;selectAcademicEditor(p.schoolYear,p.semester);notify('學期第一週基準已儲存；既有收件日期維持原值。');});return;}
+    if(form.id==='registration-settings-form'){const p={enabled:$('registrationEnabled').checked,requireCode:$('requireCode').checked,code:$('registrationCode').value};task(async()=>{const r=await rpc('saveRegistrationSettings',p);state.home.settings=r.settings;state.config=r.config;render();notify('學生註冊設定已儲存。');});return;}
+    // 在非同步作業開始前擷取表單，避免重新 render 後取不到欄位。
+    if(form.id==='auth-form'){
+      const p={username:$('username').value,password:$('password').value};
+      if(state.authTab==='register'){
+        if(p.password!==$('passwordConfirm').value){notify('兩次密碼不同。',true);return;}
+        Object.assign(p,{className:$('className').value,number:$('number').value,name:$('name').value,code:$('code')?.value||'',attendance:$('attendance')?.value});
+        task(async()=>{const r=await rpc('register',p);state.authTab='login';render();notify(r.message);});
+      }else task(async()=>{const r=await rpc('login',p);setToken(r.token);state.passwordView=false;acceptSnapshot(r);render();notify(state.me.mustChange?'請先更換臨時密碼。':'登入成功。');});return;
+    }
+    if(form.id==='password-form'){const p={oldPassword:$('oldPassword').value,newPassword:$('newPassword').value};if(p.newPassword!==$('confirmPassword').value){notify('兩次新密碼不同。',true);return;}task(async()=>{const r=await rpc('changePassword',p);clearLogin();render();notify(r.message);});return;}
+    if(form.id==='points-form'){
+      if(state.busy)return;capturePointDraftInputs();
+      if(!state.config.staged){notify('請教師完成 v4.0 程式、資訊清單與 upgradePointBankV4 升級後再提交。',true);return;}
+      let created;try{created=buildGroupDrafts();}catch(e){notify(e.message,true);return;}
+      // 轉成 draft 後清空表格：之後的失敗會留在「需要處理的申請」，以原識別碼重試，不會重複建立。
+      if(created.length){state.pointDrafts.push(...created);state.pointGroups=[];}
+      task(submitPointDrafts);return;
+    }
+    if(form.id==='record-edit-form'){submitRecordEdit();return;}
+    if(form.id==='attendance-form'){const value=$('attendanceValue').value;task(async()=>{const r=await rpc('saveAttendance',{value});state.home.attendance=r.attendance;renderStudent();notify('本學期出席堂數已儲存。');});return;}
+    if(form.id==='classroom-group-form'){saveClassroomGroup('');return;}
+    if(form.id==='form-settings-form'){const pick=cls=>Array.from(form.querySelectorAll('.'+cls)).filter(i=>i.checked).map(i=>i.value);const p={multiWeek:$('formMultiWeek').checked,requiredPoints:pick('form-required-points'),requiredFiles:pick('form-required-files')};task(async()=>{const r=await rpc('saveFormSettings',p);state.config=r.config;state.formSettingsOpen=true;render();notify('申請表單設定已儲存。');});return;}
+    if(form.id==='student-attendance-form'){const p={studentId:state.studentId,schoolYear:$('teacherAttendanceYear').value,semester:$('teacherAttendanceSemester').value,value:$('teacherAttendanceValue').value,reason:$('teacherAttendanceReason').value};task(async()=>{const r=await rpc('saveStudentAttendance',p);state.detail.attendance=r.attendance;const s=state.home.students.find(s=>s['學生ID']===p.studentId);if(s)s.attendance=r.attendance.value;render();notify('出席堂數已更新。');});return;}
+    if(form.id==='profile-form'){const bio=$('bio').value;task(async()=>{const r=await rpc('saveProfile',{bio});state.home.student=r.student;render();notify('個人介紹已儲存。');});return;}
+    if(form.id==='link-form'){const p={className:$('linkClass').value,number:$('linkNumber').value,name:$('linkName').value,note:$('linkNote').value};task(async()=>{const r=await rpc('requestLink',p);state.home.links.push(r.link);render();notify(r.message);});return;}
+    if(form.id==='review-form'){const p={recordId:state.reviewId,status:$('reviewStatus').value,points:$('reviewPoints').value,note:$('reviewNote').value};if($('reviewWaive')?.checked)p.waiveAttachments=true;const shown=currentReview();if(shown){p.expectedStatus=shown['審核狀態'];p.expectedReviewVersion=shown.reviewVersion;}if(p.status==='已核准'&&needsWaiver(shown)&&!p.waiveAttachments){notify('這筆附件還沒完整收件。可以等學生補傳，或勾選「免附件核准」後再儲存。',true);return;}task(async()=>{const r=await rpc('reviewPoints',p);applyRecordResult(r);state.reviewId=null;render();state.history=null;notify(reviewSource()==='queue'?'已儲存，接著處理下一筆。':'審核結果已儲存，總點數已重新計算。');});return;}
+    if(form.id==='adjust-form'){let p;try{state.adjustKey=state.adjustKey||key();p={studentId:state.studentId,points:$('adjustPoints').value,note:$('adjustNote').value,key:state.adjustKey};}catch(e){notify(e.message,true);return;}if(!confirm('確定調整 '+p.points+' 點？原因：'+p.note))return;task(async()=>{const r=await rpc('addAdjustment',p);state.adjustKey=null;applyRecordResult(r);render();notify('點數調整已完成。');});return;}
+    if(form.classList.contains('account-form')){const values=new FormData(form),p={accountId:form.dataset.id,username:values.get('username'),password:values.get('password'),status:values.get('status'),reason:values.get('reason')};if(!confirm('確定更新學生帳號？該帳號的所有登入都會撤銷。'))return;task(async()=>{const r=await rpc('updateAccount',p);state.detail.accounts=r.accounts;render();notify(r.message);});return;}
+    if(form.id==='create-login-form'){const p={studentId:state.studentId,username:$('newUsername').value,password:$('tempPassword').value,reason:$('createReason').value};task(async()=>{const r=await rpc('createStudentLogin',p);state.detail.accounts=r.accounts;render();notify(r.message);});return;}
+    if(form.id==='resolve-form'){const p={requestId:form.dataset.id,targetId:$('targetId').value,reason:$('resolveReason').value,approve:true};const target=state.home.students.find(s=>s['學生ID']===p.targetId);if(!target){notify('請先選擇原學生資料。',true);return;}if(!confirm(`確認兩份資料都是同一位學生？\n來源：${state.detail.student['姓名']}，${state.detail.summary.total} 點\n目標：${target['班級']} ${target['座號']} 號 ${target['姓名']}，${target.total} 點\n合併後總點數：${target.total+state.detail.summary.total}\n來源帳號及紀錄將併入目標，學生需重新登入。`))return;task(async()=>{const r=await rpc('resolveLink',p);state.studentId=p.targetId;state.reviewId=null;await load();notify(r.message);});}
+  });
+  /* v5.2 通知：教師審核、調整與課堂加扣分後，學生右上角鈴鐺顯示未讀數；打開清單即標記已讀。 */
+  const BELL_ICON='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
+  function bellHtml(){
+    const n=state.home?.notifications;if(state.me?.role!=='學生'||!n)return '';
+    return `<button type="button" id="bellButton" class="secondary bell" data-action="notifications" aria-haspopup="dialog" aria-expanded="${Boolean(state.notifyOpen)}" aria-label="通知${n.unread?'，'+n.unread+' 則未讀':''}">${BELL_ICON}<span>通知</span>${n.unread?`<span class="bell-count">${n.unread>99?'99+':n.unread}</span>`:''}</button>`;
+  }
+  function notifyItemHtml(item){
+    const fresh=state.notifyFresh?.includes(item.id);
+    return `<li class="notify-item ${esc(item.kind)}${fresh?' fresh':''}"><span class="notify-dot" aria-hidden="true"></span><div><strong>${esc(item.title)}</strong>${fresh?' <span class="badge pending">新</span>':''}<p>${esc(item.detail)}</p>${item.note?`<p class="muted small">老師備註：${esc(item.note)}</p>`:''}<span class="small muted">${esc(item.time)}</span></div></li>`;
+  }
+  function renderNotifyPanel(){
+    const panel=$('notifyPanel'),n=state.home?.notifications;panel.hidden=!state.notifyOpen||!n;if(panel.hidden){panel.innerHTML='';return;}
+    panel.innerHTML=`<div class="row notify-head"><h2>通知</h2><button type="button" class="secondary" data-action="notifyClose">關閉</button></div>${n.items.length?`<ul class="notify-list">${n.items.map(notifyItemHtml).join('')}</ul>`:'<p class="muted">目前沒有通知。老師審核申請、調整點數或在課堂上加扣分時，會出現在這裡。</p>'}<div class="actions"><button type="button" class="secondary" data-action="notifyRecords">查看點數明細</button><span class="muted small">顯示最近 60 天、最多 30 則</span></div>`;
+    const bell=$('bellButton')?.getBoundingClientRect?.();
+    if(bell&&typeof window.scrollY==='number'){const vw=document.documentElement.clientWidth,width=Math.min(380,vw-32);panel.style.top=(bell.bottom+window.scrollY+8)+'px';panel.style.right=Math.max(16,Math.min(vw-bell.right,vw-width-16))+'px';}
+  }
+  /* 先把數字歸零再通知後端；後端回傳的未讀數若更大（期間又有新通知），會再顯示。 */
+  function openNotifications(){
+    const n=state.home?.notifications;if(!n)return;
+    state.notifyOpen=true;state.notifyFresh=n.items.filter(i=>i.unread).map(i=>i.id);const newest=n.items[0],had=n.unread;
+    n.unread=0;n.items.forEach(i=>i.unread=false);renderNav();renderNotifyPanel();
+    if(had&&newest)rpc('markNotificationsRead',{until:newest.at}).then(r=>{if(r?.notifications&&state.home?.notifications){state.home.notifications=r.notifications;renderNav();}}).catch(()=>{});
+  }
+  function closeNotifications(){if(!state.notifyOpen&&!state.notifyFresh)return;state.notifyOpen=false;state.notifyFresh=null;renderNotifyPanel();if(state.me)renderNav();}
+  /* v5.1 課堂模式：教師點選學生後即時加扣分，紀錄直接為「已核准」，學生端照常顯示於明細與週次總覽。 */
+  function classroomState(){
+    if(!state.classroom)state.classroom={filter:'all',selected:[],mode:'add',categoryId:state.home?.categories?.[0]?.['項目ID']||'',note:'',custom:'',pending:null,flash:{}};
+    return state.classroom;
+  }
+  function classroomData(){return state.home.classroom||{ready:false,groups:[],recent:[],deduct:{id:'CLASS_DEDUCT',name:'課堂扣分',max:100}};}
+  function classroomStudents(){return state.home.students.filter(s=>s['帳號狀態']==='啟用').sort((a,b)=>String(a['班級']).localeCompare(String(b['班級']),'zh-Hant',{numeric:true})||(Number(a['座號'])||0)-(Number(b['座號'])||0)||String(a['座號']).localeCompare(String(b['座號'])));}
+  function classroomVisible(){
+    const c=classroomState(),all=classroomStudents();
+    if(c.filter.startsWith('class:'))return all.filter(s=>String(s['班級'])===c.filter.slice(6));
+    if(c.filter.startsWith('group:')){const g=classroomData().groups.find(g=>g.id===c.filter.slice(6));return g?all.filter(s=>g.studentIds.includes(s['學生ID'])):[];}
+    return all;
+  }
+  function classroomCountText(){const n=classroomState().selected.length;return n?'已選 '+n+' 人':'尚未選取學生';}
+  function seatHtml(s){
+    const c=classroomState(),id=s['學生ID'],on=c.selected.includes(id),flash=c.flash[id];
+    return `<button type="button" id="seat-${esc(id)}" class="seat${on?' selected':''}" aria-pressed="${on}" data-action="classroomToggle" data-id="${esc(id)}"><span class="seat-name">${esc(s['姓名'])}</span><span class="seat-meta">${esc(s['班級'])} · ${esc(seatNo(s['座號']))} 號</span><strong class="seat-total">${esc(s.total)}</strong>${flash?`<span class="seat-flash${flash<0?' neg':''}">${flash>0?'+':''}${esc(flash)}</span>`:''}</button>`;
+  }
+  /* 只切換卡片狀態，不重畫整頁，連續點選學生時不會跳動。 */
+  function toggleClassroomStudent(id){
+    const c=classroomState(),on=!c.selected.includes(id);c.selected=on?[...c.selected,id]:c.selected.filter(x=>x!==id);
+    const card=$('seat-'+id);if(card){card.className='seat'+(on?' selected':'');card.setAttribute('aria-pressed',String(on));}
+    $('classroomCount').textContent=classroomCountText();
+  }
+  function classroomActionText(a){return `${esc(a.time.slice(5))} ${esc(a.categoryName)} ${a.points>0?'+':''}${esc(a.points)}・${esc(a.names.length>4?a.names.slice(0,4).join('、')+' 等 '+a.names.length+' 人':a.names.join('、'))}${a.note?'・'+esc(a.note):''}`;}
+  function renderClassroom(){
+    const c=classroomState(),data=classroomData(),categories=state.home.categories||[],visible=classroomVisible(),classes=[...new Set(classroomStudents().map(s=>String(s['班級'])))];
+    if(c.mode==='add'&&!categories.some(x=>x['項目ID']===c.categoryId))c.categoryId=categories[0]?.['項目ID']||'';
+    const category=categories.find(x=>x['項目ID']===c.categoryId),max=c.mode==='deduct'?data.deduct.max:Number(category?.['單筆點數上限'])||100,steps=[1,2,3,5].filter(n=>n<=max);
+    const filter=`<label class="sr" for="classroomFilter">顯示學生</label><select id="classroomFilter"><option value="all">全部學生（${classroomStudents().length}）</option>${classes.length?`<optgroup label="依班級">${classes.map(x=>`<option value="class:${esc(x)}" ${c.filter==='class:'+x?'selected':''}>${esc(x)}</option>`).join('')}</optgroup>`:''}${data.groups.length?`<optgroup label="自訂分組">${data.groups.map(g=>`<option value="group:${esc(g.id)}" ${c.filter==='group:'+g.id?'selected':''}>${esc(g.name)}（${g.studentIds.length}）</option>`).join('')}</optgroup>`:''}</select>`;
+    const pending=c.pending?`<p class="warning small">上一筆「${esc(c.pending.label)}」尚未確認完成。<button type="button" class="secondary" data-action="classroomRetry">以原內容重送</button></p>`:'';
+    const panel=c.mode==='scratch'?scratchClassroomPanel(c):c.mode==='deduct'
+      ?`<p class="muted small">扣分會記在學生的「${esc(data.deduct.name)}」欄，立即計入總點數。</p>`
+      :`<p class="field-title">加分向度</p><div class="chip-row">${categories.map(x=>`<button type="button" class="chip${x['項目ID']===c.categoryId?' active':''}" data-action="classroomCategory" data-id="${esc(x['項目ID'])}">${esc(x['項目名稱'])}</button>`).join('')||'<span class="muted">目前沒有啟用的加分項目。</span>'}</div>`;
+    const sign=c.mode==='deduct'?'−':'+';
+    const log=data.recent.length?`<ul class="classroom-log">${data.recent.map(a=>`<li class="${a.undone?'undone':''}"><span>${classroomActionText(a)}</span>${a.undone?'<span class="badge">已復原</span>':`<button type="button" class="secondary" data-action="classroomUndo" data-id="${esc(a.key)}">復原</button>`}</li>`).join('')}</ul>`:'<p class="muted small">今天還沒有課堂加扣分紀錄。</p>';
+    const groups=data.ready?`<form id="classroom-group-form" class="actions"><label class="sr" for="classroomGroupName">分組名稱</label><input id="classroomGroupName" maxlength="40" placeholder="例如：週三第一節" required><button type="submit" class="secondary">把已選學生存成新分組</button></form>${data.groups.length?`<ul class="classroom-log">${data.groups.map(g=>`<li><span><strong>${esc(g.name)}</strong>・${g.studentIds.length} 人</span><span class="actions" style="margin:0"><button type="button" class="secondary" data-action="classroomGroupUpdate" data-id="${esc(g.id)}">改成目前選取</button><button type="button" class="secondary" data-action="classroomGroupDelete" data-id="${esc(g.id)}">刪除</button></span></li>`).join('')}</ul>`:''}`:'<p class="warning small">請先在 Apps Script 編輯器執行 upgradePointBankV51，才能建立自訂分組；加扣分不受影響。</p>';
+    $('app').innerHTML=`<div class="row classroom-top"><div><h1>課堂模式</h1><p class="muted">點選學生，再選向度與點數，就會立即記錄；學生重新整理後即可在點數明細與週次總覽看到。</p></div><button type="button" class="secondary" data-action="closeClassroom">返回管理台</button></div>
+    <div class="classroom-layout"><section class="card"><div class="classroom-tools">${filter}<button type="button" class="secondary" data-action="classroomSelectAll">全選</button><button type="button" class="secondary" data-action="classroomClear">清除選取</button><strong id="classroomCount" class="classroom-count">${classroomCountText()}</strong></div>${visible.length?`<div class="seat-grid">${visible.map(seatHtml).join('')}</div>`:'<div class="empty">這個篩選沒有學生。</div>'}</section>
+    <aside class="card classroom-panel ${c.mode}"><div class="student-tabs" role="tablist" aria-label="加分、扣分或刮刮樂"><button type="button" role="tab" aria-selected="${c.mode==='add'}" class="${c.mode==='add'?'':'secondary'}" data-action="classroomMode" data-id="add">加分</button><button type="button" role="tab" aria-selected="${c.mode==='deduct'}" class="${c.mode==='deduct'?'':'secondary'}" data-action="classroomMode" data-id="deduct">扣分</button><button type="button" role="tab" aria-selected="${c.mode==='scratch'}" class="${c.mode==='scratch'?'':'secondary'}" data-action="classroomMode" data-id="scratch">刮刮樂</button></div>${panel}<label for="classroomNote">備註（選填，學生看得到）</label><input id="classroomNote" maxlength="200" value="${esc(c.note)}" placeholder="例如：上台分享">${c.mode==='scratch'?scratchClassroomActions(c):`<p class="field-title">${c.mode==='deduct'?'扣分':'加分'}點數</p><div class="point-buttons">${steps.map(n=>`<button type="button" data-action="classroomAward" data-id="${n}">${sign}${n}</button>`).join('')}</div><div class="actions"><label class="sr" for="classroomCustomPoints">自訂點數</label><input id="classroomCustomPoints" type="number" min="1" max="${max}" step="1" placeholder="自訂 1～${max}" value="${esc(c.custom)}" style="max-width:140px"><button type="button" class="secondary" data-action="classroomAward" data-id="custom">${sign} 自訂點數</button></div>${pending}`}<h3 class="spacer">${c.mode==='scratch'?'最近發送的刮刮樂':'最近紀錄'}</h3>${c.mode==='scratch'?scratchLogHtml():log}</aside></div>
+    <section class="card"><details ${data.groups.length?'':'open'}><summary>自訂分組（${data.groups.length}）</summary><p class="muted small">先在上方點選學生，再存成分組；之後從「顯示學生」選單切換，按「全選」即可整組加分。</p>${groups}</details></section>`;
+    c.flash={};
+  }
+  function sendClassroomAward(value){
+    const c=classroomState(),data=classroomData(),deduct=c.mode==='deduct',category=(state.home.categories||[]).find(x=>x['項目ID']===c.categoryId);
+    if(!c.selected.length){notify('請先點選學生。',true);return;}
+    if(!deduct&&!category){notify('請先選擇加分向度。',true);return;}
+    const points=Number(value==='custom'?c.custom:value),max=deduct?data.deduct.max:Number(category['單筆點數上限'])||100;
+    if(!Number.isInteger(points)||points<1||points>max){notify('點數需為 1～'+max+' 的整數。',true);return;}
+    const label=(deduct?data.deduct.name+' −':category['項目名稱']+' +')+points+'（'+c.selected.length+' 人）';
+    submitClassroomAward({key:key(),studentIds:[...c.selected],categoryId:deduct?data.deduct.id:category['項目ID'],points,note:c.note.trim(),label});
+  }
+  /* 失敗時保留同一識別碼，重送不會重複加分。 */
+  function submitClassroomAward(payload){
+    const c=classroomState();c.pending=payload;
+    task(async()=>{
+      const {label,...p}=payload;let r;
+      try{r=await rpc('classroomAward',p);}catch(e){renderClassroom();throw e;}
+      c.pending=null;applyClassroomResult(r);r.action.studentIds.forEach(id=>c.flash[id]=r.action.points);renderClassroom();notify('已記錄：'+label);
+    });
+  }
+  function classroomStore(){return state.home.classroom||(state.home.classroom=classroomData());}
+  function applyClassroomResult(r){
+    for(const [id,total]of Object.entries(r.totals||{})){const s=state.home.students.find(s=>s['學生ID']===id);if(s)s.total=total;}
+    const data=classroomStore(),index=data.recent.findIndex(a=>a.key===r.action.key);
+    // 復原或重送時原地更新，保持新到舊的時間順序。
+    if(index>=0)data.recent[index]=r.action;else data.recent=[r.action,...data.recent].slice(0,30);
+  }
+  function undoClassroomAction(id){
+    const a=classroomData().recent.find(a=>a.key===id);if(!a||!confirm('確定復原這筆課堂紀錄？\n'+a.categoryName+' '+(a.points>0?'+':'')+a.points+'，共 '+a.names.length+' 人'))return;
+    task(async()=>{const r=await rpc('classroomUndo',{key:id});applyClassroomResult(r);renderClassroom();notify('已復原，相關點數已扣回。');});
+  }
+  function saveClassroomGroup(groupId){
+    const c=classroomState(),group=classroomData().groups.find(g=>g.id===groupId);
+    if(!c.selected.length){notify('請先點選要放進分組的學生。',true);return;}
+    const name=groupId?group?.name:$('classroomGroupName').value.trim();if(!name){notify('請輸入分組名稱。',true);return;}
+    if(groupId&&!confirm('把「'+name+'」的成員改成目前選取的 '+c.selected.length+' 人？'))return;
+    task(async()=>{const r=await rpc('saveClassroomGroup',{groupId,name,studentIds:[...c.selected]});classroomStore().groups=r.groups;renderClassroom();notify('分組已儲存。');});
+  }
+  function deleteClassroomGroup(groupId){
+    const g=classroomData().groups.find(g=>g.id===groupId);if(!g||!confirm('刪除分組「'+g.name+'」？學生與點數不受影響。'))return;
+    task(async()=>{const r=await rpc('deleteClassroomGroup',{groupId});classroomStore().groups=r.groups;const c=classroomState();if(c.filter==='group:'+groupId){c.filter='all';c.selected=[];}renderClassroom();notify('分組已刪除。');});
+  }
+  /* v5.7 獎勵刮刮樂：教師發送（課堂模式、學生明細），學生刮開後才計入總點數。點數在發送時於範圍內抽出，小點數較常見。 */
+  function scratchTeacherData(){return state.home?.scratch||{ready:false,settings:{min:1,max:5},limit:100,recent:[]};}
+  function scratchStore(){return state.home.scratch||(state.home.scratch=scratchTeacherData());}
+  function scratchLimit(){return Number(scratchTeacherData().limit)||100;}
+  function scratchRangeFrom(min,max){const lo=Number(min),hi=Number(max),limit=scratchLimit();if(String(min).trim()===''||String(max).trim()===''||!Number.isInteger(lo)||!Number.isInteger(hi)||lo<1||hi>limit||lo>hi)return null;return {min:lo,max:hi};}
+  /* 權重與伺服器相同：點數 v 的權重為 (最多 − v + 1)。 */
+  function scratchOddsText(min,max){
+    const r=scratchRangeFrom(min,max);if(!r)return '點數需為 1～'+scratchLimit()+' 的整數，且最少不可大於最多。';
+    if(r.min===r.max)return '每張固定 '+r.min+' 點。';
+    const total=(r.max-r.min+1)*(r.max-r.min+2)/2,weight=v=>r.max-v+1,pct=v=>(Math.round(weight(v)/total*1000)/10)+'%';let sum=0;const list=[];
+    for(let v=r.min;v<=r.max;v++){sum+=v*weight(v);list.push(v+' 點 '+pct(v));}
+    return '機率：'+(list.length<=8?list.join('、'):r.min+' 點最常見（'+pct(r.min)+'），'+r.max+' 點最稀有（'+pct(r.max)+'）')+'；平均約 '+(Math.round(sum/total*10)/10)+' 點。';
+  }
+  function scratchRangeFields(prefix,min,max,odds){const limit=scratchLimit();return `<div class="scratch-range"><label>最少點數<input id="${prefix}Min" type="number" min="1" max="${limit}" step="1" inputmode="numeric" value="${esc(min)}"></label><label>最多點數<input id="${prefix}Max" type="number" min="1" max="${limit}" step="1" inputmode="numeric" value="${esc(max)}"></label></div><p class="muted small" id="${odds}" aria-live="polite">${esc(scratchOddsText(min,max))}</p>`;}
+  function scratchInput(t){
+    const id=t.id;
+    if(id==='scratchMin'||id==='scratchMax'){const c=classroomState();if(id==='scratchMin')c.scratchMin=t.value;else c.scratchMax=t.value;scratchOddsRefresh('scratchOddsClassroom',c.scratchMin,c.scratchMax);return true;}
+    if(['detailScratchMin','detailScratchMax','detailScratchNote'].includes(id)){state.detailScratchKey=null;if(id!=='detailScratchNote')scratchOddsRefresh('scratchOddsDetail',$('detailScratchMin').value,$('detailScratchMax').value);return true;}
+    if(id==='settingsScratchMin'||id==='settingsScratchMax'){scratchOddsRefresh('scratchOddsSettings',$('settingsScratchMin').value,$('settingsScratchMax').value);return true;}
+    return false;
+  }
+  function scratchOddsRefresh(target,min,max){const el=$(target);if(el)el.textContent=scratchOddsText(min,max);}
+  function scratchStoreAction(action){if(!action)return;const data=scratchStore(),list=data.recent||(data.recent=[]),i=list.findIndex(a=>a.key===action.key);if(i>=0)list[i]=action;else data.recent=[action,...list].slice(0,30);}
+  function scratchNames(a){return a.names.length>4?a.names.slice(0,4).join('、')+' 等 '+a.names.length+' 人':a.names.join('、');}
+  /* 課堂模式的「刮刮樂」分頁：選學生、改範圍，一次送出每人一張。 */
+  function scratchClassroomPanel(c){
+    const sd=scratchTeacherData();if(!sd.ready)return '<p class="warning small">請先在 Apps Script 編輯器執行 upgradePointBankV57，才能發送刮刮樂。</p>';
+    if(c.scratchMin===undefined||c.scratchMin===null)c.scratchMin=String(sd.settings.min);if(c.scratchMax===undefined||c.scratchMax===null)c.scratchMax=String(sd.settings.max);
+    return `<p class="muted small">每位選取的學生各得一張刮刮樂。點數在範圍內隨機抽出，小點數較常見；學生刮開後才計入總點數。範圍預設為系統設定的 ${esc(sd.settings.min)}～${esc(sd.settings.max)} 點，這次可以臨時修改。</p>${scratchRangeFields('scratch',c.scratchMin,c.scratchMax,'scratchOddsClassroom')}`;
+  }
+  function scratchClassroomActions(c){
+    if(!scratchTeacherData().ready)return '';
+    const pending=c.scratchPending?`<p class="warning small">上一次「${esc(c.scratchPending.label)}」尚未確認完成。<button type="button" class="secondary" data-action="scratchRetry">以原內容重送</button></p>`:'';
+    return `<div class="actions"><button type="button" data-action="scratchIssue">送出刮刮樂</button></div>${pending}`;
+  }
+  function scratchLogHtml(){
+    const list=scratchTeacherData().recent||[];if(!list.length)return '<p class="muted small">還沒有發送過刮刮樂。</p>';
+    return `<ul class="classroom-log">${list.map(a=>`<li class="${a.waiting?'':'undone'}"><span>${esc(String(a.time).slice(5))} ${esc(a.min)}～${esc(a.max)} 點・${esc(scratchNames(a))}・已刮開 ${esc(a.opened)}／${esc(a.count)} 張${a.opened?`（共 ${esc(a.openedPoints)} 點）`:''}${a.revoked?`・已收回 ${esc(a.revoked)} 張`:''}${a.note?'・'+esc(a.note):''}</span>${a.waiting?`<button type="button" class="secondary" data-action="scratchRevokeKey" data-id="${esc(a.key)}">收回未刮開（${esc(a.waiting)}）</button>`:''}</li>`).join('')}</ul>`;
+  }
+  function sendClassroomScratch(){
+    const c=classroomState();if(!scratchTeacherData().ready){notify('請先執行 upgradePointBankV57，才能發送刮刮樂。',true);return;}
+    if(!c.selected.length){notify('請先點選學生。',true);return;}
+    const r=scratchRangeFrom(c.scratchMin,c.scratchMax);if(!r){notify(scratchOddsText(c.scratchMin,c.scratchMax),true);return;}
+    submitScratch({key:key(),studentIds:[...c.selected],min:r.min,max:r.max,note:c.note.trim(),label:'刮刮樂 '+r.min+'～'+r.max+' 點（'+c.selected.length+' 人）'});
+  }
+  /* 失敗時保留同一識別碼，重送不會多發。 */
+  function submitScratch(payload){
+    const c=classroomState();c.scratchPending=payload;
+    task(async()=>{const {label,...p}=payload;let r;try{r=await rpc('scratchIssue',p);}catch(e){renderClassroom();throw e;}c.scratchPending=null;scratchStoreAction(r.action);renderClassroom();notify('已送出：'+label+'。學生刮開後才會計入點數。');});
+  }
+  function revokeScratchAction(id){
+    const a=(scratchTeacherData().recent||[]).find(x=>x.key===id);if(!a||state.busy)return;
+    if(!confirm('確定收回這次發送中還沒刮開的 '+a.waiting+' 張刮刮樂？\n'+scratchNames(a)+'\n已刮開的 '+a.opened+' 張不受影響。'))return;
+    task(async()=>{const r=await rpc('scratchRevoke',{key:id});scratchStoreAction(r.action);renderClassroom();notify('已收回 '+r.revoked+' 張刮刮樂。');});
+  }
+  /* 學生明細：送一張給這位學生、查看與收回。 */
+  function detailScratchHtml(d){
+    const sd=scratchTeacherData();if(!sd.ready)return '';
+    const all=d.scratch?.all||[],table=`<div class="table-scroll"><table><thead><tr><th>發送時間</th><th>範圍</th><th>狀態</th><th>原因</th><th>操作</th></tr></thead><tbody>${all.map(c=>`<tr><td class="small">${esc(c.sentAt)}${c.openedAt?`<br><span class="muted">刮開 ${esc(c.openedAt)}</span>`:''}</td><td>${esc(c.min)}～${esc(c.max)} 點</td><td>${badge(c.status)}${c.status==='已刮開'?` <strong>+${esc(c.points)}</strong>`:''}</td><td class="note">${c.note?esc(c.note):'<span class="muted">—</span>'}</td><td>${c.status==='未刮開'?`<button type="button" class="secondary" data-action="detailScratchRevoke" data-id="${esc(c.id)}">收回</button>`:''}</td></tr>`).join('')}</tbody></table></div>`;
+    return `<section class="scratch-teacher spacer"><h3>刮刮樂</h3><p class="muted small">送給這位學生一張刮刮樂。點數在範圍內隨機抽出，小點數較常見；學生刮開後才計入總點數，刮開前老師也看不到點數。</p>${scratchRangeFields('detailScratch',sd.settings.min,sd.settings.max,'scratchOddsDetail')}<div class="scratch-range"><label class="scratch-note-field">原因（選填，學生看得到）<input id="detailScratchNote" maxlength="200" placeholder="例如：主動幫忙同學"></label></div><div class="actions"><button type="button" class="secondary" data-action="detailScratchIssue">送出刮刮樂</button></div>${all.length?table:'<p class="muted small">還沒有送過刮刮樂給這位學生。</p>'}</section>`;
+  }
+  function sendDetailScratch(){
+    const r=scratchRangeFrom($('detailScratchMin').value,$('detailScratchMax').value),studentId=state.studentId,name=state.detail?.student['姓名']||'學生';
+    if(!r){notify(scratchOddsText($('detailScratchMin').value,$('detailScratchMax').value),true);return;}
+    const p={key:state.detailScratchKey||(state.detailScratchKey=key()),studentIds:[studentId],min:r.min,max:r.max,note:$('detailScratchNote').value.trim()};
+    task(async()=>{const res=await rpc('scratchIssue',p);state.detailScratchKey=null;scratchStoreAction(res.action);state.detail=await rpc('studentDetail',{studentId});render();notify('已送出一張刮刮樂給 '+name+'（'+r.min+'～'+r.max+' 點）。');});
+  }
+  function revokeDetailScratch(id){
+    const c=(state.detail?.scratch?.all||[]).find(x=>x.id===id);if(!c||state.busy)return;
+    if(!confirm('確定收回這張還沒刮開的刮刮樂？\n'+c.sentAt+(c.note?'・'+c.note:'')))return;
+    const studentId=state.studentId;task(async()=>{await rpc('scratchRevoke',{cardId:id});state.detail=await rpc('studentDetail',{studentId});render();notify('已收回這張刮刮樂。');});
+  }
+  function scratchSettingsHtml(){
+    const sd=scratchTeacherData();
+    if(!sd.ready)return '<section class="card"><h2>刮刮樂設定</h2><p class="warning">請先在 Apps Script 編輯器執行 upgradePointBankV57，才能使用刮刮樂。</p></section>';
+    return `<section class="card" id="scratchSettings"><h2>刮刮樂設定</h2><p class="muted">設定發送刮刮樂時預設的獎勵點數範圍。每次發送時仍可臨時改成別的範圍；已經送出的刮刮樂不受影響。</p>${scratchRangeFields('settingsScratch',sd.settings.min,sd.settings.max,'scratchOddsSettings')}<div class="actions"><button type="button" data-action="saveScratchSettings">儲存刮刮樂設定</button></div></section>`;
+  }
+  function saveScratchSettings(){
+    const r=scratchRangeFrom($('settingsScratchMin').value,$('settingsScratchMax').value);if(!r){notify(scratchOddsText($('settingsScratchMin').value,$('settingsScratchMax').value),true);return;}
+    task(async()=>{const res=await rpc('saveScratchSettings',r);scratchStore().settings=res.settings;if(state.classroom){state.classroom.scratchMin=null;state.classroom.scratchMax=null;}notify('刮刮樂設定已儲存：'+res.settings.min+'～'+res.settings.max+' 點。');});
+  }
+  /* 學生端：未刮開的刮刮樂放在總點數下方；點開後先向伺服器登記刮開，再讓學生刮銀色區域揭曉。 */
+  function studentScratchHtml(h){
+    const s=h.scratch;if(!s||(!s.cards.length&&!s.opened.length))return '';
+    const tickets=s.cards.map(c=>`<button type="button" class="scratch-ticket" data-action="scratchOpen" data-id="${esc(c.id)}"><span class="scratch-ticket-title">刮刮樂</span><span>${esc(c.note||'老師送你的獎勵')}</span><span class="small">${esc(c.sentAt)} · ${esc(c.min)}～${esc(c.max)} 點</span><span class="scratch-ticket-cta">點我刮開</span></button>`).join('');
+    return `<section class="card scratch-student${s.cards.length?' has-cards':''}"><h2>我的刮刮樂${s.cards.length?`<span class="badge pending">${s.cards.length} 張未刮開</span>`:''}</h2>${s.cards.length?`<p class="muted small">老師送你的獎勵！刮開後，點數會直接存入點數存摺。</p><div class="scratch-tickets">${tickets}</div>`:'<p class="muted small">目前沒有未刮開的刮刮樂。</p>'}${s.opened.length?`<details class="spacer"><summary>已刮開的刮刮樂（${s.opened.length}）</summary><ul class="scratch-opened">${s.opened.map(c=>`<li><strong>+${esc(c.points)} 點</strong> <span class="muted small">${esc(c.openedAt)}${c.note?' · '+esc(c.note):''}</span></li>`).join('')}</ul></details>`:''}</section>`;
+  }
+  function openScratch(id){
+    const card=(state.home?.scratch?.cards||[]).find(c=>c.id===id);if(!card||state.busy)return;
+    state.scratchView={id,card,result:null,done:false};
+    $('scratchBody').innerHTML='<p class="muted" role="status">正在準備刮刮樂…</p>';$('scratchDialog').showModal();
+    task(async()=>{
+      let r;try{r=await rpc('scratchReveal',{cardId:id});}catch(e){if(state.scratchView?.id===id)$('scratchBody').innerHTML=`<p class="warning">${esc(e.message)}</p><div class="actions"><button type="button" class="secondary" data-action="scratchClose">關閉</button></div>`;throw e;}
+      applyScratchResult(r);if(state.scratchView?.id!==id){render();return;}state.scratchView.result=r;renderScratchView();notify('');
+    });
+  }
+  function applyScratchResult(r){
+    const h=state.home;if(!h)return;h.summary=r.summary;h.scratch=r.scratch;
+    if(r.record){const i=h.records.findIndex(x=>x['紀錄ID']===r.record['紀錄ID']);if(i>=0)h.records[i]=r.record;else h.records.unshift(r.record);}
+    const item=h.notifications?.items.find(x=>x.id===r.card.id);if(item){item.title='刮刮樂已刮開';item.detail='獲得 +'+r.card.points+' 點';}
+  }
+  function renderScratchView(){
+    const v=state.scratchView,c=v.result.card;
+    $('scratchBody').innerHTML=`<div class="scratch-play"><p class="scratch-note">${esc(c.note||'老師送你的獎勵')}</p><div id="scratchArea" class="scratch-area"><div class="scratch-prize"><span>獲得</span><strong>+${esc(c.points)}</strong><span>點</span></div><canvas id="scratchCanvas" aria-label="刮開區域"></canvas></div><p id="scratchHint" class="muted small" aria-live="polite">用手指或滑鼠在銀色區域來回刮，刮開一半就會揭曉。</p><div class="actions" id="scratchActions"><button type="button" class="secondary" data-action="scratchRevealNow">直接揭曉</button></div></div>`;
+    setupScratchCanvas();
+  }
+  function setupScratchCanvas(){
+    const canvas=$('scratchCanvas');if(!canvas||!canvas.getContext)return;
+    const ctx=canvas.getContext('2d');if(!ctx)return;
+    const box=canvas.getBoundingClientRect(),ratio=window.devicePixelRatio||1,w=box.width||300,h=box.height||180;
+    canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);ctx.scale(ratio,ratio);
+    const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#aeb9be');g.addColorStop(.5,'#e4e9eb');g.addColorStop(1,'#9fabb1');
+    ctx.fillStyle=g;ctx.fillRect(0,0,w,h);ctx.fillStyle='#55646a';ctx.font='700 20px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('刮開這裡',w/2,h/2);
+    ctx.globalCompositeOperation='destination-out';ctx.lineWidth=38;ctx.lineCap='round';ctx.lineJoin='round';
+    let last=null,moves=0;
+    const at=e=>{const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
+    const check=()=>{if(scratchCleared(ctx,canvas)>0.5)finishScratch();};
+    canvas.onpointerdown=e=>{e.preventDefault();if(canvas.setPointerCapture)canvas.setPointerCapture(e.pointerId);last=at(e);ctx.beginPath();ctx.arc(last.x,last.y,19,0,Math.PI*2);ctx.fill();};
+    canvas.onpointermove=e=>{if(!last)return;e.preventDefault();const p=at(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;moves++;if(moves%10===0)check();};
+    canvas.onpointerup=canvas.onpointercancel=()=>{if(!last)return;last=null;check();};
+  }
+  /* 抽樣每 16 個像素的透明度，估計已刮開的比例。 */
+  function scratchCleared(ctx,canvas){try{const d=ctx.getImageData(0,0,canvas.width,canvas.height).data;let clear=0,n=0;for(let i=3;i<d.length;i+=64){n++;if(d[i]===0)clear++;}return n?clear/n:1;}catch(e){return 1;}}
+  function finishScratch(){
+    const v=state.scratchView;if(!v||!v.result||v.done)return;v.done=true;
+    const area=$('scratchArea');if(area?.classList)area.classList.add('revealed');
+    $('scratchHint').textContent='恭喜！獲得 '+v.result.card.points+' 點，已存入你的點數存摺。';
+    $('scratchActions').innerHTML='<button type="button" data-action="scratchClose">收下</button>';
+  }
+  function closeScratch(){const was=state.scratchView;state.scratchView=null;if($('scratchDialog').open)$('scratchDialog').close();$('scratchBody').innerHTML='';if(was&&state.me?.role==='學生'&&state.home)render();}
+  function formSettingsHtml(){
+    const rules=formRules(),categories=state.home.categories||[],mark=(list,id)=>list.includes(id)?'checked':'';
+    return `<section class="card"><details ${state.formSettingsOpen?'open':''}><summary>申請表單設定</summary><p class="muted">設定學生「存入本週的努力」表單。加分項目的名稱、上限、排序與是否啟用，仍在試算表「加分項目」調整。</p><form id="form-settings-form"><label class="check"><input id="formMultiWeek" type="checkbox" ${rules.multiWeek?'checked':''}>允許學生一次申請多週（熱門時段建議關閉，避免同時大量提交造成等待）</label>${categories.length?`<div class="table-scroll form-rules"><table><thead><tr><th>加分項目</th><th>點數必填</th><th>附件必填</th></tr></thead><tbody>${categories.map(c=>`<tr><td>${esc(c['項目名稱'])}</td><td><input type="checkbox" class="form-required-points" value="${esc(c['項目ID'])}" aria-label="${esc(c['項目名稱'])}點數必填" ${mark(rules.requiredPoints,c['項目ID'])}></td><td><input type="checkbox" class="form-required-files" value="${esc(c['項目ID'])}" aria-label="${esc(c['項目名稱'])}附件必填" ${mark(rules.requiredFiles,c['項目ID'])}></td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">目前沒有啟用的加分項目。</p>'}<p class="muted small">點數必填：學生每次申請都要填這個向度，沒有可填 0。附件必填：這個向度有申請點數時，必須附上佐證。</p><div class="actions"><button type="submit">儲存申請表單設定</button></div></form></details></section>`;
+  }
+  function teacherAttendanceHtml(a){
+    const range=state.config.attendance||{min:1,max:200},history=a.history.length?a.history.map(h=>`${esc(termName(h))}：${esc(h.value)} 堂`).join('；'):'尚未填寫';
+    return `<details class="spacer"><summary>出席堂數（每週）：${a.value===null?'本學期未填':esc(termName(a))+' '+esc(a.value)+' 堂'}</summary><p class="muted small">歷次紀錄：${history}。目前不影響點數計算。</p><form id="student-attendance-form"><div class="grid">${field('學年度（民國）','teacherAttendanceYear','number',a.schoolYear,'required min="1" max="999" step="1"')}<div><label for="teacherAttendanceSemester">學期</label><select id="teacherAttendanceSemester"><option value="1" ${a.semester===1?'selected':''}>上學期</option><option value="2" ${a.semester===2?'selected':''}>下學期</option></select></div></div>${field('出席堂數（每週）','teacherAttendanceValue','number',a.value??'',`required min="${range.min}" max="${range.max}" step="1"`)}${field('修改原因（選填）','teacherAttendanceReason','text','','maxlength="500"')}<div class="actions"><button type="submit" class="secondary">儲存出席堂數</button></div></form></details>`;
+  }
+  function registrationHtml(){
+    const settings=state.home.settings||{enabled:true,requireCode:true,code:''};
+    return `<section class="card"><details><summary>學生註冊設定</summary><p class="muted">可使用簡短註冊碼，或關閉註冊碼。開放註冊與要求註冊碼可分別控制。</p><form id="registration-settings-form"><label class="check"><input id="registrationEnabled" type="checkbox" ${settings.enabled?'checked':''}>開放學生自行註冊</label><label class="check"><input id="requireCode" type="checkbox" ${settings.requireCode?'checked':''}>註冊時必須輸入註冊碼</label>${field('學生註冊碼（1–32 字，可自訂簡短內容）','registrationCode','text',settings.code,'maxlength="32" autocomplete="off"')}<div class="actions"><button type="submit">儲存註冊設定</button>${settings.folderUrl?`<a href="${esc(settings.folderUrl)}" target="_blank" rel="noopener noreferrer">開啟附件資料夾</a>`:'<span class="muted small">附件功能尚未啟用，請先執行 upgradePointBankV3。</span>'}</div></form></details></section>`;
+  }
+  /* v5.5 教師管理台：頁籤切換只改顯示，不重新 render；各頁籤內的長清單放在可捲動的區塊。 */
+  const TEACHER_TABS=[['queue','待審核'],['history','檢核紀錄'],['students','學生總覽'],['links','帳號歸戶'],['receipts','收件管理'],['settings','系統設定']];
+  function teacherTabActive(){return TEACHER_TABS.some(([k])=>k===state.teacherTab)?state.teacherTab:'queue';}
+  function teacherTabsHtml(h,active){
+    const count=k=>k==='queue'?`（${h.pending.length}）`:k==='links'&&h.links.length?`（${h.links.length}）`:'';
+    return `<div class="student-tabs teacher-tabs" role="tablist" aria-label="教師工作區">${TEACHER_TABS.map(([k,label])=>`<button type="button" role="tab" id="teacherTab-${k}" aria-controls="teacherPanel-${k}" aria-selected="${k===active}" class="${k===active?'':'secondary'}" data-action="teacherTab" data-id="${k}">${label}${count(k)}</button>`).join('')}</div>`;
+  }
+  function switchTeacherTab(tab){
+    if(!TEACHER_TABS.some(([k])=>k===tab))return;state.teacherTab=tab;
+    for(const [k] of TEACHER_TABS){const button=$('teacherTab-'+k),panel=$('teacherPanel-'+k);if(!button||!panel)continue;const on=k===tab;button.className=on?'':'secondary';button.setAttribute('aria-selected',String(on));panel.hidden=!on;}
+    // 審核表單一次只放一個地方：回到待審核頁籤時，表單跟著回到工作台。
+    if(tab==='queue'&&reviewSource()!=='queue'){state.reviewFrom='queue';state.reviewId=null;if($('reviewPanel'))$('reviewPanel').innerHTML='';renderQueue();}
+    if(tab==='history'&&!state.history)loadHistory();
+  }
+  function linksPanelHtml(h){
+    return `<section class="card"><h2>帳號歸戶申請</h2><p class="muted">學生忘記舊帳號、又註冊了新帳號時，可從新帳號申請「連結原有點數」。核准後，新帳號與其中的申請會併入原本的學生資料，重複的那份會停用；退回則兩邊維持原狀。核准前請確認學生身分及雙方點數。</p>${h.links.length?h.links.map(r=>`<div class="account"><strong>${esc(r['申請班級'])} ${esc(seatNo(r['申請座號']))} 號 · ${esc(r['申請姓名'])}</strong><p class="note">${esc(r['學生說明'])}</p><button class="secondary" data-action="openStudent" data-id="${esc(r['目前學生ID'])}">查看申請人的資料並處理</button></div>`).join(''):'<div class="empty">目前沒有待處理的帳號歸戶申請。</div>'}</section>`;
+  }
+  function renderTeacher(){
+    const h=state.home,active=h.students.filter(s=>s['帳號狀態']==='啟用'),tab=teacherTabActive(),hide=k=>k===tab?'':'hidden';
+    $('app').innerHTML=`<div class="hero row"><div><h1>教師管理台</h1><p class="muted">審核申請、查看學生累積，並管理登入帳號。</p></div><button type="button" data-action="openClassroom">進入課堂模式</button></div><div class="stats"><div class="stat"><span>有效學生</span><strong>${active.length}</strong></div><div class="stat"><span>待審核紀錄</span><strong><button class="link" data-action="openQueue" aria-label="開啟全部待審核紀錄">${h.pending.length}</button></strong><span class="small muted">點選數字開始批核</span></div><div class="stat"><span>卡在處理中</span><strong><button class="link" data-action="queueShowProcessing" aria-label="開啟處理中的申請">${(h.processing||[]).length}</button></strong><span class="small muted">附件還沒傳完</span></div><div class="stat"><span>待處理帳號歸戶</span><strong><button class="link" data-action="teacherTab" data-id="links" aria-label="開啟帳號歸戶申請">${h.links.length}</button></strong></div></div>${teacherTabsHtml(h,tab)}`
+      +`<div id="teacherPanel-queue" role="tabpanel" aria-labelledby="teacherTab-queue" ${hide('queue')}><div id="queuePanel"></div></div>`
+      +`<div id="teacherPanel-history" role="tabpanel" aria-labelledby="teacherTab-history" ${hide('history')}><div id="historyPanel"></div></div>`
+      +`<div id="teacherPanel-students" role="tabpanel" aria-labelledby="teacherTab-students" ${hide('students')}><section class="card"><div class="row"><h2>學生總覽</h2><div><label class="sr" for="search">搜尋學生</label><input id="search" placeholder="搜尋班級、座號或姓名" value="${esc(state.search)}" type="search"></div></div><div class="roster-tools"><label for="studentSort">學生排序<select id="studentSort">${[['classAsc','班級：由小到大（班內按座號）'],['classDesc','班級：由大到小（班內按座號）'],['pointsDesc','總點數：由高到低'],['pointsAsc','總點數：由低到高']].map(([value,label])=>`<option value="${value}" ${state.sortMode===value?'selected':''}>${label}</option>`).join('')}</select></label><button type="button" data-action="openPointStats">全體點數統計／獎品參考</button></div><div id="roster" class="scroll-pane roster-pane"></div></section><div id="detail">${state.detail?detailHtml():''}</div></div>`
+      +`<div id="teacherPanel-links" role="tabpanel" aria-labelledby="teacherTab-links" ${hide('links')}>${linksPanelHtml(h)}</div>`
+      +`<div id="teacherPanel-receipts" role="tabpanel" aria-labelledby="teacherTab-receipts" ${hide('receipts')}>${receiptPanelHtml()}</div>`
+      +`<div id="teacherPanel-settings" role="tabpanel" aria-labelledby="teacherTab-settings" ${hide('settings')}>${registrationHtml()}${formSettingsHtml()}${scratchSettingsHtml()}<section class="card" id="academicSettings">${academicSettingsHtml()}</section></div>`;
+    renderRoster();renderAcademicPreview();renderQueue();renderHistory();
+  }
+  function batchMax(){return Number(state.config.reviewBatchMax)||50;}
+  function studentOf(id){return state.home.students.find(s=>s['學生ID']===id);}
+  function studentLabel(s){return s?`${s['班級']} ${seatNo(s['座號'])} 號 ${s['姓名']}`:'學生';}
+  function classList(ids){return [...new Set(ids.map(id=>String(studentOf(id)?.['班級']??'')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'zh-Hant',{numeric:true}));}
+  /* v5.6：工作台可切換「待審核」「處理中（附件還沒傳完）」或兩者；處理中的可以等學生補傳，或由教師免附件核准。 */
+  const QUEUE_STATUS=[['pending','待審核'],['processing','處理中'],['all','全部']];
+  function queuePool(){const h=state.home,processing=h.processing||[];return state.queueStatus==='processing'?processing:state.queueStatus==='all'?[...h.pending,...processing]:h.pending;}
+  function queueKnown(id){return state.home.pending.find(r=>r['紀錄ID']===id)||(state.home.processing||[]).find(r=>r['紀錄ID']===id);}
+  function needsWaiver(r){return Boolean(r&&(['處理中','需補件'].includes(r['審核狀態'])||r.uploadPending||(r.processing&&r.processing.state!=='已完成')));}
+  function attachmentProgress(r){const files=(r.attachments||[]).filter(f=>!r.activeAttachmentIds||r.activeAttachmentIds.includes(f.id));return files.length?`附件 ${files.filter(f=>f.status==='已完成').length}/${files.length}`:'';}
+  function waiverLabel(r){const st=r.processing?.state;return [r['審核狀態']==='處理中'?'處理中':'',st&&!['已完成','處理中'].includes(st)?(st==='已取消'?'上傳已停止':st):'',attachmentProgress(r)].filter(Boolean).join('・')||'附件未完成';}
+  function queueRecords(){return queuePool().filter(r=>{const s=studentOf(r['學生ID']);return (!state.queueFilter||r['學生ID']===state.queueFilter)&&(!state.queueClass||String(s?.['班級']??'')===state.queueClass)&&(!state.queueCategory||r['項目ID']===state.queueCategory);});}
+  function countOptions(list,selected,keyOf,labelOf,all){const counts=new Map();list.forEach(x=>{const k=keyOf(x);if(k)counts.set(k,(counts.get(k)||0)+1);});return `<option value="">${all}</option>`+[...counts.keys()].map(k=>`<option value="${esc(k)}" ${k===selected?'selected':''}>${esc(labelOf(k))}（${counts.get(k)}）</option>`).join('');}
+  function queueFiltersHtml(){
+    const pending=queuePool(),h=state.home,size={pending:h.pending.length,processing:(h.processing||[]).length,all:h.pending.length+(h.processing||[]).length},inClass=pending.filter(r=>!state.queueClass||String(studentOf(r['學生ID'])?.['班級']??'')===state.queueClass);
+    const students=[...inClass].sort((a,b)=>compareStudentClass(studentOf(a['學生ID'])||{},studentOf(b['學生ID'])||{}));
+    return `<div class="queue-filters"><label>狀態<select id="queueStatus">${QUEUE_STATUS.map(([k,label])=>`<option value="${k}" ${state.queueStatus===k?'selected':''}>${label}（${size[k]}）</option>`).join('')}</select></label><label>班級<select id="queueClass">${countOptions(pending,state.queueClass,r=>String(studentOf(r['學生ID'])?.['班級']??''),k=>k,'全部班級')}</select></label><label>學生<select id="queueStudent">${countOptions(students,state.queueFilter,r=>r['學生ID'],id=>studentLabel(studentOf(id)),'全部學生')}</select></label><label>加分項目<select id="queueCategory">${countOptions(pending,state.queueCategory,r=>r['項目ID'],id=>pending.find(r=>r['項目ID']===id)?.['項目名稱快照']||id,'全部項目')}</select></label><button type="button" class="secondary" data-action="queueClearFilters">清除篩選</button></div>`;
+  }
+  function batchBarHtml(items){
+    const waivable=items.filter(needsWaiver).length,ids=new Set(items.map(r=>r['紀錄ID'])),n=state.queueSelected.filter(id=>ids.has(id)).length,all=items.length&&items.slice(0,batchMax()).every(r=>state.queueSelected.includes(r['紀錄ID']));
+    return `<div class="batch-bar"><label class="check"><input type="checkbox" id="queueSelectAll" ${all?'checked':''} ${items.length?'':'disabled'}>全選目前清單${items.length>batchMax()?`（前 ${batchMax()} 筆）`:''}</label><strong id="batchCount" aria-live="polite">已勾選 ${n} 筆</strong><label class="sr" for="batchNote">批次備註</label><input id="batchNote" maxlength="1000" placeholder="給學生的備註（選填；退回、補件建議填寫原因）" value="${esc(state.batchNote||'')}"><div class="actions batch-actions"><button type="button" data-action="batchReview" data-id="已核准" ${n?'':'disabled'}>批次核准</button><button type="button" class="secondary" data-action="batchReview" data-id="需補件" ${n?'':'disabled'}>批次要求補件</button><button type="button" class="danger" data-action="batchReview" data-id="已退回" ${n?'':'disabled'}>批次退回</button><button type="button" class="secondary" data-action="batchClear" ${n?'':'disabled'}>取消勾選</button></div>${waivable?`<label class="check waive-check"><input type="checkbox" id="batchWaive" ${state.batchWaive?'checked':''}>附件未完成的也直接核准（免附件；未傳完的附件會停止上傳）</label>`:''}</div><p class="muted small">批次核准時，每筆依學生申請的點數核定。一次最多 ${batchMax()} 筆；附件未完成的申請，只有勾選「免附件」才會核准。</p>`;
+  }
+  function updateBatchBar(){const items=queueRecords(),ids=new Set(items.map(r=>r['紀錄ID'])),n=state.queueSelected.filter(id=>ids.has(id)).length;if($('batchCount'))$('batchCount').textContent='已勾選 '+n+' 筆';document.querySelectorAll('[data-action="batchReview"],[data-action="batchClear"]').forEach(b=>{b.disabled=!n;});const all=$('queueSelectAll');if(all)all.checked=Boolean(items.length)&&items.slice(0,batchMax()).every(r=>state.queueSelected.includes(r['紀錄ID']));}
+  function queueChange(t){
+    if(t.id==='queueStatus'){state.queueStatus=t.value;state.queueSelected=[];const pool=queuePool();if(!pool.some(r=>r['學生ID']===state.queueFilter))state.queueFilter='';if(!pool.some(r=>String(studentOf(r['學生ID'])?.['班級']??'')===state.queueClass))state.queueClass='';if(!pool.some(r=>r['項目ID']===state.queueCategory))state.queueCategory='';renderQueue();return true;}
+    if(t.id==='batchWaive'){state.batchWaive=t.checked;return true;}
+    if(t.id==='receiptState'){state.receiptState=t.value;renderReceiptList();return true;}
+    if(t.id==='queueClass'){state.queueClass=t.value;state.queueFilter='';state.queueSelected=[];renderQueue();return true;}
+    if(t.id==='queueStudent'){state.queueFilter=t.value;state.queueSelected=[];renderQueue();return true;}
+    if(t.id==='queueCategory'){state.queueCategory=t.value;state.queueSelected=[];renderQueue();return true;}
+    if(t.id==='queueSelectAll'){const items=queueRecords();if(t.checked){state.queueSelected=items.slice(0,batchMax()).map(r=>r['紀錄ID']);if(items.length>batchMax())notify('一次最多 '+batchMax()+' 筆，已勾選清單中的前 '+batchMax()+' 筆。');}else state.queueSelected=[];document.querySelectorAll('.queue-check').forEach(c=>{c.checked=state.queueSelected.includes(c.value);});updateBatchBar();return true;}
+    if(t.classList?.contains('queue-check')){const id=t.value;if(t.checked){if(state.queueSelected.length>=batchMax()){t.checked=false;notify('一次最多 '+batchMax()+' 筆，請先處理已勾選的申請。',true);return true;}if(!state.queueSelected.includes(id))state.queueSelected.push(id);}else state.queueSelected=state.queueSelected.filter(x=>x!==id);t.closest?.('.queue-row')?.classList.toggle('checked',t.checked);updateBatchBar();return true;}
+    if(['historyClass','historyStudent','historyStatus'].includes(t.id)){const f=state.historyFilter;if(t.id==='historyClass'){f.className=t.value;f.studentId='';}if(t.id==='historyStudent')f.studentId=t.value;if(t.id==='historyStatus')f.status=t.value;renderHistory();return true;}
+    return false;
+  }
+  function renderQueue(){
+    if(!$('queuePanel')||!state.home?.pending)return;
+    const all=queuePool(),items=queueRecords(),processingCount=(state.home.processing||[]).length,anything=state.home.pending.length+processingCount;
+    // 待審核頁籤是審核表單的位置；另一個頁籤正在明細中審核時，不搶走表單。
+    if(teacherTabActive()==='queue'||state.view==='queue'||reviewSource()==='queue'){
+      if(reviewSource()!=='queue'||!items.some(r=>r['紀錄ID']===state.reviewId))state.reviewId=(items.find(r=>!r.uploadPending)||items[0])?.['紀錄ID']||null;
+      state.reviewFrom='queue';
+    }
+    const valid=new Set([...state.home.pending,...(state.home.processing||[])].map(r=>r['紀錄ID']));state.queueSelected=(state.queueSelected||[]).filter(id=>valid.has(id));
+    const selected=items.find(r=>r['紀錄ID']===state.reviewId)||items[0],student=selected&&studentOf(selected['學生ID']),filtered=state.queueFilter||state.queueClass||state.queueCategory;
+    const list=items.map(r=>{const s=studentOf(r['學生ID']),on=state.queueSelected.includes(r['紀錄ID']);return `<div class="queue-row ${on?'checked':''}"><input type="checkbox" class="queue-check" value="${esc(r['紀錄ID'])}" aria-label="勾選 ${esc(s?.['姓名']||'學生')} ${esc(r['項目名稱快照'])}" ${on?'checked':''}><button type="button" class="queue-item ${selected&&r['紀錄ID']===selected['紀錄ID']?'selected':''}" data-action="queueSelect" data-id="${esc(r['紀錄ID'])}"><strong>${esc(s?.['姓名']||'學生')}</strong> · ${esc(s?.['班級']||'')} ${esc(seatNo(s?.['座號']))}<br>${esc(r['項目名稱快照'])} · ${esc(r['申請點數'])} 點<br><span class="small">${esc(r['週次起始日'])}${weekNumberText(r)?' · '+esc(weekNumberText(r)):''}</span>${needsWaiver(r)?`<br><span class="small warning">${esc(waiverLabel(r))}${r['審核狀態']==='處理中'&&r['建立時間']?' · 送出 '+esc(String(r['建立時間']).slice(0,16)):''}</span>`:''}</button></div>`;}).join('');
+    $('queuePanel').innerHTML=`<section class="card"><div class="row queue-top"><div><h2>待審核工作台</h2><p class="muted">${filtered?`篩選後 ${items.length} 筆／全部 ${all.length} 筆`:`尚有 ${all.length} 筆`}；單筆儲存後會接續下一筆，也可以勾選後批次處理。</p></div></div>${state.queueStatus==='pending'&&processingCount?`<p class="warning small">另有 ${processingCount} 筆申請卡在「處理中」（附件還沒傳完）。<button type="button" class="link" data-action="queueShowProcessing">查看處理中的申請</button></p>`:''}${anything?queueFiltersHtml()+(all.length?batchBarHtml(items):''):''}${items.length?`<div class="queue-grid"><aside class="queue-list scroll-pane" aria-label="待審核清單">${list}</aside><section class="queue-detail scroll-pane"><h2>${esc(student?.['姓名']||'學生')}的點數申請</h2><p class="muted">${esc(student?.['班級']||'')} / ${esc(seatNo(student?.['座號']))} 號 · 週次 ${esc(selected['週次起始日'])}${weekFullText(selected)?`（${esc(weekFullText(selected))}）`:''} · ${esc(selected['項目名稱快照'])} ${esc(selected['申請點數'])} 點</p><p class="file-note">${selected['學生說明']?esc(selected['學生說明']):'<span class="muted">學生未填寫說明。</span>'}</p>${attachmentHtml(selected,true)}${needsWaiver(selected)?`<p class="warning">附件尚未完整收件（${esc(waiverLabel(selected))}）${selected.processing?.error?'：'+esc(selected.processing.error):''}。可以等學生補傳，或在下方勾選「免附件核准」直接核准；未傳完的附件會停止上傳。</p>`:''}<div id="queueReviewPanel">${selected['紀錄ID']===state.reviewId?reviewHtml('queue'):''}</div></section></div>`:all.length?'<div class="empty">沒有符合篩選條件的申請。<br><button type="button" class="secondary spacer" data-action="queueClearFilters">清除篩選</button></div>':`<div class="empty"><h2>${state.queueStatus==='processing'?'沒有卡在處理中的申請':'這個清單已處理完成'}</h2><p>可重新整理確認是否有新申請。</p></div>`}</section>`;
+  }
+  function runBatchReview(status){
+    const label={'已核准':'核准','需補件':'要求補件','已退回':'退回'}[status];if(!label||state.busy)return;
+    const shown=new Set(queueRecords().map(r=>r['紀錄ID']));
+    let list=state.queueSelected.filter(id=>shown.has(id)).map(queueKnown).filter(Boolean);
+    if(!list.length){notify('請先勾選要處理的申請。',true);return;}
+    if(list.length>batchMax()){notify('一次最多 '+batchMax()+' 筆，請減少勾選。',true);return;}
+    const incomplete=status==='已核准'?list.filter(needsWaiver):[],waive=Boolean(incomplete.length&&state.batchWaive),waiting=waive?[]:incomplete;list=list.filter(r=>!waiting.includes(r));
+    if(!list.length){notify('勾選的申請附件都還沒完成。若要直接核准，請勾選「附件未完成的也直接核准」。',true);return;}
+    const note=($('batchNote')?.value??state.batchNote??'').trim(),points=list.reduce((sum,r)=>sum+(Number(r['申請點數'])||0),0),people=new Set(list.map(r=>r['學生ID'])).size;
+    if(!confirm(`確定批次${label} ${list.length} 筆申請（${people} 位學生）？\n${status==='已核准'?`將依學生申請點數核定，共 ${points} 點。\n`:''}${waive?`其中 ${incomplete.length} 筆附件未完成，將免附件核准，未傳完的附件會停止上傳。\n`:''}${waiting.length?`另有 ${waiting.length} 筆附件未完成，這次不會核准（勾選「免附件」才會核准）。\n`:''}給學生的備註：${note||'（無）'}\n之後可在「檢核紀錄」回復。`))return;
+    task(async()=>{
+      const r=await rpc('batchReview',{status,note,...(waive?{waiveAttachments:true}:{}),items:list.map(x=>({recordId:x['紀錄ID'],expectedReviewVersion:x.reviewVersion}))});
+      const done=new Set(r.done);applySummaries(r.summaries);
+      state.home.pending=state.home.pending.filter(x=>!done.has(x['紀錄ID']));if(state.home.processing)state.home.processing=state.home.processing.filter(x=>!done.has(x['紀錄ID']));state.queueSelected=state.queueSelected.filter(id=>!done.has(id));
+      if(state.detail)state.detail.records.forEach(x=>{if(done.has(x['紀錄ID']))Object.assign(x,{'審核狀態':status,'核定點數':status==='已核准'?x['申請點數']:'','教師備註':status==='需補件'?(note||'請補充佐證附件後重新送審。'):note});});
+      if(done.has(state.reviewId))state.reviewId=null;state.batchNote='';state.batchWaive=false;state.history=null;render();
+      notify(`已批次${label} ${r.done.length} 筆${r.waived?.length?`（其中 ${r.waived.length} 筆免附件）`:''}。`+skippedText(r.skipped),Boolean(r.skipped.length));
+    });
+  }
+  function applySummaries(summaries){Object.entries(summaries||{}).forEach(([id,sum])=>{const s=studentOf(id);if(s)Object.assign(s,sum);if(state.detail?.student['學生ID']===id)state.detail.summary=sum;});}
+  function recordName(id){const r=queueKnown(id)||state.history?.actions.flatMap(a=>a.records).find(x=>x['紀錄ID']===id);return r?`${studentOf(r['學生ID'])?.['姓名']||'學生'} ${r['項目名稱快照']}`:'一筆申請';}
+  function skippedText(skipped){if(!skipped?.length)return '';return `\n${skipped.length} 筆沒有處理：\n`+skipped.slice(0,6).map(s=>`・${recordName(s.recordId)}：${s.reason}`).join('\n')+(skipped.length>6?`\n…另 ${skipped.length-6} 筆`:'')+'\n可按右上角「重新整理」取得最新資料後再處理。';}
+  /* 檢核紀錄：只在打開頁籤或按重新載入時向伺服器讀取，避免拖慢教師首頁。 */
+  function loadHistory(){task(async()=>{state.history=await rpc('reviewHistory');renderHistory();notify('');});}
+  function historyMatch(r){const f=state.historyFilter||{},s=studentOf(r['學生ID']);return (!f.className||String(s?.['班級']??'')===f.className)&&(!f.studentId||r['學生ID']===f.studentId);}
+  function historyVisibleRecords(a){const f=state.historyFilter||{};if(f.status&&a.status!==f.status)return [];return a.records.filter(historyMatch);}
+  function historyRecordRow(r,status){const s=studentOf(r['學生ID']);return `<tr><td>${esc(studentLabel(s))}</td><td>${esc(r['項目名稱快照'])}</td><td>${esc(r['週次起始日'])}${weekNumberText(r)?`<br><span class="small muted">${esc(weekNumberText(r))}</span>`:''}</td><td>${status==='已核准'?`<strong>${esc(r['核定點數'])}</strong>`:`<span class="muted">申請 ${esc(r['申請點數'])}</span>`}</td><td>${r.blocked?`<span class="muted small">${esc(r.blocked)}</span>`:`<button type="button" class="secondary" data-action="historyRevertOne" data-id="${esc(r['紀錄ID'])}">回復</button>`}</td></tr>`;}
+  function historyActionHtml(a,records){
+    const ok=records.filter(r=>!r.blocked),points=a.status==='已核准'?records.reduce((sum,r)=>sum+(Number(r['核定點數'])||0),0):null,multi=a.records.length>1;
+    const table=`<div class="table-scroll"><table class="history-table"><thead><tr><th>學生</th><th>項目</th><th>週次</th><th>點數</th><th>操作</th></tr></thead><tbody>${records.map(r=>historyRecordRow(r,a.status)).join('')}</tbody></table></div>`;
+    return `<article class="history-item"><div class="row"><div><strong>${esc(a.time.slice(0,16))}</strong> ${badge(a.status)} <span>${multi?'批次 ':''}${records.length} 筆${points===null?'':` · 共 ${points} 點`}${records.length<a.records.length?`<span class="muted small">（本次共 ${a.records.length} 筆，依篩選顯示）</span>`:''}</span>${a.note?`<div class="muted small file-note">備註：${esc(a.note)}</div>`:''}</div>${ok.length?`<button type="button" class="secondary" data-action="historyRevert" data-id="${esc(a.key)}">${records.length>1?`回復這 ${Math.min(ok.length,batchMax())} 筆`:'回復這次檢核'}</button>`:'<span class="muted small">無法回復</span>'}</div>${multi?`<details><summary>查看 ${records.length} 筆明細</summary>${table}</details>`:table}</article>`;
+  }
+  function renderHistory(){
+    if(!$('historyPanel'))return;const h=state.history;
+    if(!h){$('historyPanel').innerHTML='<section class="card"><h2>檢核紀錄</h2><p class="muted">打開這個頁籤時會載入你批閱過的紀錄。</p><button type="button" class="secondary" data-action="historyRefresh">載入檢核紀錄</button></section>';return;}
+    const f=state.historyFilter||(state.historyFilter={className:'',studentId:'',status:''}),all=h.actions.flatMap(a=>a.records),inClass=all.filter(r=>!f.className||String(studentOf(r['學生ID'])?.['班級']??'')===f.className);
+    const shown=h.actions.map(a=>[a,historyVisibleRecords(a)]).filter(([,list])=>list.length);
+    $('historyPanel').innerHTML=`<section class="card"><div class="row"><div><h2>檢核紀錄</h2><p class="muted">你批閱過、目前仍有效的檢核結果（最新 ${esc(h.limit)} 筆申請${h.total>h.limit?`，共 ${esc(h.total)} 筆`:''}）。按「回復」後，該筆會回到「待審核」，已核准的點數會被追回。</p></div><button type="button" class="secondary" data-action="historyRefresh">重新載入</button></div><div class="queue-filters"><label>班級<select id="historyClass">${countOptions(all,f.className,r=>String(studentOf(r['學生ID'])?.['班級']??''),k=>k,'全部班級')}</select></label><label>學生<select id="historyStudent">${countOptions(inClass,f.studentId,r=>r['學生ID'],id=>studentLabel(studentOf(id)),'全部學生')}</select></label><label>結果<select id="historyStatus"><option value="">全部結果</option>${['已核准','需補件','已退回','已作廢'].map(x=>`<option ${f.status===x?'selected':''}>${x}</option>`).join('')}</select></label></div><div class="history-list scroll-pane">${shown.length?shown.map(([a,list])=>historyActionHtml(a,list)).join(''):'<div class="empty">沒有符合條件的檢核紀錄。</div>'}</div></section>`;
+  }
+  function revertHistory(records){
+    const list=records.filter(r=>!r.blocked).slice(0,batchMax());if(!list.length||state.busy)return;
+    const action=state.history.actions.find(a=>a.records.includes(list[0])),approved=action?.status==='已核准',points=approved?list.reduce((sum,r)=>sum+(Number(r['核定點數'])||0),0):0,people=new Set(list.map(r=>r['學生ID'])).size;
+    if(!confirm(`確定回復 ${list.length} 筆檢核（${people} 位學生）？\n${list.length===1?recordName(list[0]['紀錄ID'])+'\n':''}這些申請會回到「待審核」${approved?`，已核發的 ${points} 點會被追回`:''}。\n學生的通知會一併撤下，之後可在待審核重新處理。`))return;
+    task(async()=>{
+      const r=await rpc('revertReviews',{items:list.map(x=>({recordId:x['紀錄ID'],expectedReviewVersion:x.reviewVersion}))});
+      const done=new Set(r.done);applySummaries(r.summaries);
+      state.history.actions=state.history.actions.map(a=>Object.assign(a,{records:a.records.filter(x=>!done.has(x['紀錄ID']))})).filter(a=>a.records.length);
+      const known=new Set(state.home.pending.map(x=>x['紀錄ID']));state.home.pending.push(...r.records.filter(x=>!known.has(x['紀錄ID'])));
+      if(state.detail)r.records.forEach(x=>{const i=state.detail.records.findIndex(y=>y['紀錄ID']===x['紀錄ID']);if(i>=0)state.detail.records[i]=x;});
+      render();notify(`已回復 ${r.done.length} 筆，回到待審核。`+skippedText(r.skipped),Boolean(r.skipped.length));
+    });
+  }
+  /* 頁面底部的帳號列：網頁嵌入 Google 協作平台時，頂端按鈕可能被協作平台的頁首遮住。 */
+  function renderFooter(){const f=$('appFooter');if(!f)return;const me=state.me;f.hidden=!me;f.innerHTML=me?`<div class="wrap row"><span class="small">${esc(me.name)} · ${esc(me.role)}</span><div class="actions" style="margin:0"><button type="button" class="secondary" data-action="scrollTop">回到頂端</button><button type="button" class="secondary" data-action="refresh">重新整理</button><button type="button" class="secondary" data-action="password">更換密碼</button><button type="button" class="secondary" data-action="logout">登出</button></div></div>`:'';}
+  function embeddedInSite(){try{const list=Array.from(window.location?.ancestorOrigins||[]);return list.length>2||list.some(o=>!/^https:\/\/([a-z0-9-]+\.)*(script\.google\.com|googleusercontent\.com)$/i.test(o));}catch(_){return false;}}
+  function currentReview(){return reviewSource()==='queue'?queueKnown(state.reviewId):state.detail?.records.find(r=>r['紀錄ID']===state.reviewId);}
+  function attachmentHtml(record,teacher){
+    const files=record.attachments||[];
+    const supplement=record['審核狀態']==='需補件'&&!teacher;
+    if(!files.length&&!supplement)return '';
+    return `<div class="attachments">${files.map(f=>`<div class="file-note">📎 ${esc(f.name)} <span class="muted small">(${Math.ceil(f.size/1024)} KB)</span> ${f.status==='已完成'?`${previewableFile(f)?`<button class="secondary" data-action="previewOpen" data-id="${esc(f.id)}" data-record="${esc(record['紀錄ID'])}">預覽圖片</button> `:''}<button class="secondary" data-action="downloadAttachment" data-id="${esc(f.id)}">下載</button>${teacher&&f.driveUrl?` <a href="${esc(f.driveUrl)}" target="_blank" rel="noopener noreferrer">在 Drive 檢視</a>`:''}`:['已取消','已替代'].includes(f.status)?'<span class="muted">'+esc(f.status)+'</span>':'<span class="warning">待補傳</span>'}</div>`).join('')}${supplement?`<p class="warning">教師要求補件：${esc(record.supplementRequest?.note||record['教師備註']||'請提供佐證附件後重新送審。')}</p><button type="button" data-action="supplementUpload" data-id="${esc(record['紀錄ID'])}">補件／重新送審</button>`:''}${record.uploadPending&&!teacher&&!supplement?`<button class="secondary" data-action="resumeUpload" data-id="${esc(record['紀錄ID'])}">以原內容補傳附件</button>`:''}</div>`;
+  }
+  function applyRecordResult(result){
+    const r=result.record;if(!r)return;
+    const id=r['紀錄ID'],studentId=r['學生ID'];
+    const update=records=>{const i=records.findIndex(x=>x['紀錄ID']===id);if(i>=0)records[i]=r;else records.unshift(r);};
+    if(state.me.role==='學生'){update(state.home.records);state.home.summary=result.summary;}
+    else{const s=state.home.students.find(s=>s['學生ID']===studentId);if(s)Object.assign(s,result.summary);state.home.pending=state.home.pending.filter(x=>x['紀錄ID']!==id);if(r['審核狀態']==='待審核')state.home.pending.push(r);if(state.home.processing){state.home.processing=state.home.processing.filter(x=>x['紀錄ID']!==id);if(r['審核狀態']==='處理中')state.home.processing.push(r);}if(state.detail?.student['學生ID']===studentId){update(state.detail.records);state.detail.summary=result.summary;}}
+  }
+  async function readUploadFiles(files){
+    const limit=state.config.upload||{maxFiles:3,maxFileBytes:3145728,maxTotalBytes:6291456};
+    if(files.length>limit.maxFiles)throw new Error('每次最多 3 個附件。');
+    if(files.some(f=>!f.size||f.size>limit.maxFileBytes)||files.reduce((sum,f)=>sum+f.size,0)>limit.maxTotalBytes)throw new Error('每個附件上限 3 MB，合計上限 6 MB，且不可為空檔案。');
+    return Promise.all(files.map(file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve({name:file.name,size:file.size,data:String(reader.result).split(',')[1]});reader.onerror=()=>reject(new Error('無法讀取 '+file.name));reader.readAsDataURL(file);})));
+  }
+  const preview={files:[],index:0,scale:1,session:0,request:0,cache:new Map(),pending:new Map(),trigger:null,drag:null};
+  function previewableFile(file){return file.status==='已完成' && /\.(jpe?g|png|gif|webp|heic|heif)$/i.test(file.name);}
+  function detectImageMime(bytes){
+    const starts=signature=>signature.every((v,i)=>bytes[i]===v);
+    const text=(start,end)=>String.fromCharCode(...bytes.slice(start,end));
+    if(starts([137,80,78,71,13,10,26,10]))return 'image/png';
+    if(starts([255,216,255]))return 'image/jpeg';
+    if(['GIF87a','GIF89a'].includes(text(0,6)))return 'image/gif';
+    if(text(0,4)==='RIFF'&&text(8,12)==='WEBP')return 'image/webp';
+    if(text(4,8)==='ftyp'&&['heic','heix','hevc','hevx','mif1','msf1'].includes(text(8,12)))return 'image/heif';
+    return '';
+  }
+  function previewRecord(id){return [...(state.home?.records||[]),...(state.home?.pending||[]),...(state.detail?.records||[]),...(state.receiptView?.items||[]).map(i=>i.record).filter(Boolean)].find(r=>r['紀錄ID']===id);}
+  function openImagePreview(id,recordId,trigger){
+    const dialog=$('imagePreview');
+    if(dialog.open)return;
+    const record=previewRecord(recordId);
+    const files=(record?.attachments||[]).filter(previewableFile);
+    const index=files.findIndex(f=>f.id===id);
+    if(index<0){notify('這張圖片目前無法預覽，請重新整理或下載原檔。',true);return;}
+    cleanupImagePreview();preview.files=files;preview.trigger=trigger||document.activeElement;
+    if(typeof dialog.showModal!=='function'){notify('此瀏覽器不支援預覽視窗，請使用附件的下載功能。',true);return;}
+    dialog.showModal();showPreviewImage(index);
+  }
+  function cleanupImagePreview(){
+    preview.session++;preview.request++;preview.drag=null;
+    const image=$('previewImage');image.onload=null;image.onerror=null;image.removeAttribute('src');image.removeAttribute('style');
+    for(const entry of preview.cache.values())URL.revokeObjectURL(entry.url);
+    preview.cache.clear();preview.pending.clear();preview.files=[];
+    $('previewStage').hidden=true;$('previewStage').style.cursor='grab';
+    if(preview.trigger?.isConnected)preview.trigger.focus();preview.trigger=null;
+  }
+  function closeImagePreview(){if($('imagePreview').open)$('imagePreview').close();cleanupImagePreview();}
+  async function previewEntry(file,session){
+    if(preview.cache.has(file.id))return preview.cache.get(file.id);
+    if(preview.pending.has(file.id))return preview.pending.get(file.id);
+    const pending=(async()=>{
+      const result=await rpc('attachmentDownload',{attachmentId:file.id});
+      if(session!==preview.session||!$('imagePreview').open)return null;
+      const binary=atob(result.data),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
+      const mime=detectImageMime(bytes);
+      if(!mime)throw new Error('這個檔案不是可辨識的圖片格式，請下載原檔查看。');
+      const entry={url:URL.createObjectURL(new Blob([bytes],{type:mime})),name:result.name};
+      preview.cache.set(file.id,entry);return entry;
+    })();
+    preview.pending.set(file.id,pending);
+    try{return await pending;}finally{if(session===preview.session)preview.pending.delete(file.id);}
+  }
+  async function showPreviewImage(index){
+    if(!$('imagePreview').open||index<0||index>=preview.files.length)return;
+    preview.index=index;preview.scale=1;preview.drag=null;
+    const session=preview.session,request=++preview.request,file=preview.files[index],image=$('previewImage');
+    image.onload=null;image.onerror=null;image.removeAttribute('src');
+    $('previewTitle').textContent=file.name;$('previewCount').textContent=(index+1)+' / '+preview.files.length;
+    $('previewPrev').disabled=index===0;$('previewNext').disabled=index===preview.files.length-1;
+    $('previewDownload').dataset.id=file.id;$('previewScale').textContent='—';
+    $('previewStage').hidden=true;$('previewStatus').hidden=false;$('previewStatus').textContent='正在載入圖片…';
+    setPreviewZoomDisabled(true);
+    try{
+      const entry=await previewEntry(file,session);
+      if(!entry||session!==preview.session||request!==preview.request||!$('imagePreview').open)return;
+      image.onload=()=>{
+        if(session!==preview.session||request!==preview.request)return;
+        $('previewStatus').hidden=true;$('previewStage').hidden=false;setPreviewZoomDisabled(false);fitPreview();
+      };
+      image.onerror=()=>{if(session!==preview.session||request!==preview.request)return;$('previewStage').hidden=true;$('previewStatus').hidden=false;$('previewStatus').textContent='瀏覽器無法顯示這張圖片（例如不支援的 HEIC／HEIF），請下載原檔或使用 Drive 檢視。';setPreviewZoomDisabled(true);};
+      image.alt=entry.name;image.src=entry.url;
+    }catch(e){if(session!==preview.session||request!==preview.request)return;$('previewStatus').textContent=e.message||'圖片載入失敗，請關閉後重試。';}
+  }
+  function setPreviewZoomDisabled(disabled){['previewZoomIn','previewZoomOut','previewFit','previewActual'].forEach(id=>$(id).disabled=disabled);}
+  function zoomPreview(scale){
+    const image=$('previewImage');if($('previewStage').hidden||!image.naturalWidth)return;
+    preview.scale=Math.min(4,Math.max(.02,scale));
+    image.style.width=Math.round(image.naturalWidth*preview.scale)+'px';image.style.height=Math.round(image.naturalHeight*preview.scale)+'px';
+    $('previewScale').textContent=Math.round(preview.scale*100)+'%';
+  }
+  function fitPreview(){
+    const stage=$('previewStage'),image=$('previewImage');if(stage.hidden||!image.naturalWidth||!image.naturalHeight)return;
+    zoomPreview(Math.min(1,Math.max(1,stage.clientWidth-32)/image.naturalWidth,Math.max(1,stage.clientHeight-32)/image.naturalHeight));
+    stage.scrollLeft=0;stage.scrollTop=0;
+  }
+  $('imagePreview').addEventListener('close',()=>{if(!$('imagePreview').open)cleanupImagePreview();});
+  $('imagePreview').addEventListener('click',e=>{if(e.target!==$('imagePreview'))return;const rect=$('imagePreview').getBoundingClientRect();if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom)closeImagePreview();});
+  document.addEventListener('click',e=>{if(state.notifyOpen&&!e.target.closest?.('#notifyPanel,#bellButton'))closeNotifications();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.notifyOpen)closeNotifications();});
+  $('imagePreview').addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();showPreviewImage(preview.index-1);}if(e.key==='ArrowRight'){e.preventDefault();showPreviewImage(preview.index+1);}if(['+','='].includes(e.key)){e.preventDefault();zoomPreview(preview.scale*1.25);}if(e.key==='-'){e.preventDefault();zoomPreview(preview.scale/1.25);}});
+  $('previewStage').addEventListener('dblclick',()=>{if(Math.abs(preview.scale-1)<.01)fitPreview();else zoomPreview(1);});
+  $('previewStage').addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0||$('previewStage').hidden)return;const stage=$('previewStage');preview.drag={x:e.clientX,y:e.clientY,left:stage.scrollLeft,top:stage.scrollTop};stage.setPointerCapture(e.pointerId);stage.style.cursor='grabbing';e.preventDefault();});
+  $('previewStage').addEventListener('pointermove',e=>{if(!preview.drag)return;const stage=$('previewStage');stage.scrollLeft=preview.drag.left+preview.drag.x-e.clientX;stage.scrollTop=preview.drag.top+preview.drag.y-e.clientY;});
+  ['pointerup','pointercancel','lostpointercapture'].forEach(event=>$('previewStage').addEventListener(event,()=>{preview.drag=null;$('previewStage').style.cursor='grab';}));
+  function studentScore(student){const value=student.total;if((typeof value!=='number'&&typeof value!=='string')||String(value).trim()==='')return NaN;return Number(value);}
+  const studentCollator=new Intl.Collator('zh-Hant',{numeric:true,sensitivity:'base'});
+  function compareStudentClass(a,b,descending=false){
+    const compare=(key)=>studentCollator.compare(String(a[key]??''),String(b[key]??''));
+    return (descending?-1:1)*compare('班級')||compare('座號')||compare('姓名')||compare('學生ID');
+  }
+  function sortStudents(students,mode){
+    return students.slice().sort((a,b)=>{
+      if(mode==='pointsDesc'||mode==='pointsAsc'){
+        const x=studentScore(a),y=studentScore(b),validX=Number.isFinite(x),validY=Number.isFinite(y);
+        if(validX!==validY)return validX?-1:1;
+        if(validX&&x!==y)return mode==='pointsDesc'?y-x:x-y;
+      }
+      return compareStudentClass(a,b,mode==='classDesc');
+    });
+  }
+  function percentileInc(sorted,p){if(!sorted.length)return null;const position=(sorted.length-1)*p,lower=Math.floor(position),fraction=position-lower;return sorted[lower]+((sorted[Math.min(lower+1,sorted.length-1)]-sorted[lower])*fraction);}
+  function calculatePointStats(students){
+    const values=students.map(studentScore).filter(Number.isFinite).sort((a,b)=>a-b),count=values.length;
+    const total=values.reduce((sum,n)=>sum+n,0),q1=percentileInc(values,.25),median=percentileInc(values,.5),q3=percentileInc(values,.75);
+    return {count:count,excluded:students.length-count,total:total,mean:count?total/count:null,min:count?values[0]:null,max:count?values[count-1]:null,q1:q1,median:median,q3:q3,iqr:count?q3-q1:null,values:values};
+  }
+  function statNumber(value){return value===null||!Number.isFinite(value)?'—':new Intl.NumberFormat('zh-TW',{maximumFractionDigits:2}).format(value);}
+  function statsPopulation(){
+    const options=state.pointStats;
+    return (state.home?.students||[]).filter(s=>(options.includeInactive||s['帳號狀態']==='啟用')&&(!options.className||String(s['班級']||'未填班級')===options.className));
+  }
+  function rewardThresholdResult(students,raw){
+    if(String(raw).trim()==='')return '輸入門檻點數，即可試算需要準備幾份獎品。';
+    const threshold=Number(raw);if(!Number.isFinite(threshold))return '請輸入有效的門檻點數。';
+    const scores=students.map(studentScore).filter(Number.isFinite),qualified=scores.filter(score=>score>=threshold).length;
+    return '達到 '+statNumber(threshold)+' 點以上：'+qualified+'／'+scores.length+' 人'+(scores.length?'（'+statNumber(qualified/scores.length*100)+'%）':'')+'。若每位達標學生領一份，需準備 '+qualified+' 份獎品。';
+  }
+  function openPointStats(){
+    if(state.me?.role!=='教師'){notify('僅教師可查看全體學生點數統計。',true);return;}
+    renderPointStats();if(!$('pointStats').open)$('pointStats').showModal();
+  }
+  function closePointStats(){if($('pointStats').open)$('pointStats').close();$('pointStatsBody').innerHTML='';}
+  function renderPointStats(){
+    const students=statsPopulation(),summary=calculatePointStats(students),options=state.pointStats;
+    const classes=[...new Set((state.home?.students||[]).map(s=>String(s['班級']||'未填班級')))].sort(studentCollator.compare);
+    const metrics=[['統計人數',summary.count],['平均點數',summary.mean],['中位數／Q2',summary.median],['最低點數',summary.min],['第一四分位數／Q1',summary.q1],['最高點數',summary.max],['第三四分位數／Q3',summary.q3],['四分位距／Q3－Q1',summary.iqr],['合計總點數',summary.total]];
+    const groups=new Map();students.forEach(s=>{const name=String(s['班級']||'未填班級');if(!groups.has(name))groups.set(name,[]);groups.get(name).push(s);});
+    $('pointStatsBody').innerHTML=`<p class="muted">以已核准紀錄的總點數計算，包含 0 分與負分學生；預設排除已停用或已歸戶的舊資料。搜尋欄不影響這裡的全體統計。資料變動後可返回總覽按「重新整理」。</p><div class="roster-tools"><label>統計班級<select id="statsClass"><option value="">全部班級</option>${classes.map(name=>`<option value="${esc(name)}" ${options.className===name?'selected':''}>${esc(name)}</option>`).join('')}</select></label><label class="check"><input id="statsIncludeInactive" type="checkbox" ${options.includeInactive?'checked':''}>納入停用學生</label></div><p class="muted small">目前範圍：${esc(options.className||'全部班級')} · ${options.includeInactive?'包含停用學生':'僅啟用學生'}${summary.excluded?'；略過 '+summary.excluded+' 筆非有效數字，請確認資料。':''}</p>${summary.count?'':'<p class="warning">此範圍尚無可統計學生，數值以「—」顯示。</p>'}<div class="stats-metrics">${metrics.map(([label,value])=>`<div class="stat"><span>${label}</span><strong>${summary.count||label==='統計人數'?statNumber(value):'—'}</strong></div>`).join('')}</div><p class="stats-method">Q1、Q2、Q3 分別為第 25、50、75 百分位數，採含首尾的線性插值：排序後位置為 (人數－1) × 百分比。畫面最多顯示小數兩位，門檻試算使用未四捨五入的原始分數。</p><section class="card"><h3>各班比較</h3>${groups.size?`<div class="table-scroll"><table><thead><tr><th>班級</th><th>人數</th><th>平均</th><th>最低</th><th>Q1</th><th>中位數／Q2</th><th>Q3</th><th>最高</th></tr></thead><tbody>${[...groups.keys()].sort(studentCollator.compare).map(name=>{const s=calculatePointStats(groups.get(name));return `<tr><td>${esc(name)}</td>${[s.count,s.mean,s.min,s.q1,s.median,s.q3,s.max].map(n=>`<td>${statNumber(n)}</td>`).join('')}</tr>`;}).join('')}</tbody></table></div>`:'<p class="muted">目前沒有可比較的班級。</p>'}</section><section class="card"><h3>獎品門檻試算</h3><p class="muted small">依目前統計範圍試算，每位達標學生一份；此功能不會扣除點數。</p><label for="rewardThreshold">門檻點數（含此點數）</label><input id="rewardThreshold" type="number" step="any" value="${esc(options.threshold)}" placeholder="例如 50"><p id="rewardResult" class="reward-result" role="status" aria-live="polite"></p></section>`;
+    $('rewardResult').textContent=rewardThresholdResult(students,options.threshold);
+  }
+  $('pointStats').addEventListener('close',()=>{if(!$('pointStats').open)$('pointStatsBody').innerHTML='';});
+  function academicCurrentClient(date){
+    if(!date&&state.config.academic?.current)return state.config.academic.current;
+    const value=date||today(),year=Number(value.slice(0,4)),month=Number(value.slice(5,7));return {schoolYear:year-1911-(month<8?1:0),semester:month>=2&&month<=7?2:1,today:value};
+  }
+  function academicTerm(year,semester){return (state.config.academic?.terms||[]).find(t=>t.schoolYear===Number(year)&&t.semester===Number(semester));}
+  function academicLabel(c){return c.schoolYear+' 學年度'+(Number(c.semester)===2?'下學期':'上學期')+' 第 '+c.weekNumber+' 週';}
+  /* v5.5.2：後台週次標籤。已收件的週次快照優先；沒有快照時依教師設定的學期第一週換算（只用於顯示，不回寫紀錄）。 */
+  function recordWeekInfo(r){
+    if(r?.calendar?.weekNumber)return r.calendar;
+    const academic=state.config.academic,d=String(r?.['週次起始日']||'');if(!academic?.enabled||!d)return null;
+    for(const t of academic.terms||[]){const end=academicEnd(t.schoolYear,t.semester);for(let w=1;w<=(academic.maxWeeks||21);w++){const m=academicMonday(t.firstMonday,w);if(!m||m>end||m>d)break;if(m===d)return {schoolYear:t.schoolYear,semester:t.semester,weekNumber:w,firstMonday:t.firstMonday};}}
+    return null;
+  }
+  function weekNumberText(r){const c=recordWeekInfo(r);return c?'第 '+c.weekNumber+' 週':'';}
+  function weekFullText(r){const c=recordWeekInfo(r);return c?academicLabel(c):'';}
+  /* 學生註冊時若座號填成「24號」，畫面不再重複顯示「號」；試算表資料不變。 */
+  function seatNo(v){return String(v??'').trim().replace(/\s*號$/,'');}
+  function academicMonday(first,week){const d=new Date(first+'T00:00:00Z');if(!Number.isFinite(d.getTime())||d.toISOString().slice(0,10)!==first||d.getUTCDay()!==1)return '';d.setUTCDate(d.getUTCDate()+7*(Number(week)-1));return d.toISOString().slice(0,10);}
+  function academicEnd(year,semester){return (Number(year)+1912)+(Number(semester)===1?'-01-31':'-07-31');}
+  function syncAcademicDraft(d,useCurrentWeek){
+    const term=academicTerm(d.schoolYear,d.semester);if(!term){d.calendar=null;d.week='';return;}
+    if(useCurrentWeek){const distance=Math.floor((new Date(today()+'T00:00:00Z')-new Date(term.firstMonday+'T00:00:00Z'))/604800000)+1;d.weekNumber=Math.min(21,Math.max(1,distance));}
+    d.calendar={schoolYear:term.schoolYear,semester:term.semester,weekNumber:d.weekNumber,firstMonday:term.firstMonday,revision:term.revision};d.week=academicMonday(term.firstMonday,d.weekNumber);
+  }
+  function academicPayload(d){
+    if(d.dateMode!=='week')return {dateMode:'date'};
+    const term=academicTerm(d.schoolYear,d.semester);if(!state.config.academic?.enabled||!term)throw new Error('所選學期尚未設定第一週，請聯絡教師或改用日期。');
+    if(!d.calendar||d.calendar.revision!==term.revision||d.calendar.firstMonday!==term.firstMonday)throw new Error('週次基準已更新，請按「確認最新週次日期」後再送出。');
+    if(!Number.isInteger(Number(d.weekNumber))||d.weekNumber<1||d.weekNumber>21)throw new Error('週次需為 1～21。');
+    const monday=academicMonday(term.firstMonday,d.weekNumber);if(d.week!==monday||Number(d.calendar.weekNumber)!==Number(d.weekNumber))throw new Error('週次與日期不一致，請重新選擇週次。');
+    if(monday>today())throw new Error('不能提交未來週次。');if(monday>academicEnd(d.schoolYear,d.semester))throw new Error('所選週次超出學期範圍。');
+    return {dateMode:'week',calendar:{...d.calendar}};
+  }
+  function academicDateFields(d,disabled){
+    const attr=name=>`data-point-draft="${d.id}" data-field="${name}"`;
+    if(d.locked||d.resumeOnly)return field('原紀錄日期（補件不更改）','week-'+d.id,'date',d.week,'disabled')+((d.originalCalendar||d.calendar)?`<p class="muted small">${esc(academicLabel(d.originalCalendar||d.calendar))}</p>`:'');
+    const mode=d.dateMode||'date',enabled=state.config.academic?.enabled;
+    const switcher=`<label for="dateMode-${d.id}">紀錄日期方式</label><select id="dateMode-${d.id}" ${attr('dateMode')}><option value="date" ${mode==='date'?'selected':''}>選擇日期</option><option value="week" ${mode==='week'?'selected':''} ${enabled?'':'disabled'}>選擇學期週次</option></select>`;
+    if(mode==='date')return switcher+field('紀錄日期（自動歸入該週星期一）','week-'+d.id,'date',d.week,`required max="${today()}" ${attr('week')}`);
+    const current=academicCurrentClient(),term=academicTerm(d.schoolYear,d.semester),years=[...new Set([current.schoolYear,current.schoolYear-1,current.schoolYear-2,...(state.config.academic?.terms||[]).map(t=>t.schoolYear),Number(d.schoolYear)])].filter(y=>y>0).sort((a,b)=>b-a),changed=term&&(!d.calendar||d.calendar.revision!==term.revision);
+    return switcher+`<div class="grid"><div><label for="schoolYear-${d.id}">學年度（民國）</label><select id="schoolYear-${d.id}" ${attr('schoolYear')}>${years.map(y=>`<option value="${y}" ${y===Number(d.schoolYear)?'selected':''}>${y} 學年度</option>`).join('')}</select></div><div><label for="semester-${d.id}">學期</label><select id="semester-${d.id}" ${attr('semester')}><option value="1" ${Number(d.semester)===1?'selected':''}>上學期</option><option value="2" ${Number(d.semester)===2?'selected':''}>下學期</option></select></div></div><label for="weekNumber-${d.id}">週次（最多 21 週）</label><select id="weekNumber-${d.id}" ${attr('weekNumber')} ${term?'':'disabled'}>${Array.from({length:21},(_,i)=>{const n=i+1,monday=term?academicMonday(term.firstMonday,n):'',future=monday&&monday>today(),outside=monday&&monday>academicEnd(d.schoolYear,d.semester);return `<option value="${n}" ${n===Number(d.weekNumber)?'selected':''} ${future||outside?'disabled':''}>第 ${n} 週${monday?' · '+monday:''}${outside?'（超出學期）':future?'（尚未到）':''}</option>`;}).join('')}</select>${term?`<p class="muted small">本學期第一週：${esc(term.firstMonday)}。換算日期：<strong>${esc(d.week||'尚未確認')}</strong>（星期一）</p>${changed?`<p class="warning small">週次基準已更新，請先確認新的換算日期。</p><button type="button" class="secondary" data-action="confirmAcademicDate" data-id="${d.id}">確認最新週次日期</button>`:''}`:'<p class="warning small">這個學期尚未設定第一週，請教師先設定，或切換為「選擇日期」。</p>'}`;
+  }
+  function selectAcademicEditor(year,semester){
+    const term=academicTerm(year,semester);state.academicEditorOpen=true;state.academicEditor={schoolYear:Number(year),semester:Number(semester),firstMonday:term?.firstMonday||'',revision:term?.revision||''};$('academicSettings').innerHTML=academicSettingsHtml();renderAcademicPreview();
+  }
+  function academicSettingsHtml(){
+    const current=academicCurrentClient();if(!state.academicEditor){const term=academicTerm(current.schoolYear,current.semester);state.academicEditor={schoolYear:current.schoolYear,semester:current.semester,firstMonday:term?.firstMonday||'',revision:term?.revision||''};}
+    const e=state.academicEditor,enabled=state.config.academic?.enabled,terms=state.config.academic?.terms||[];
+    return `<details ${state.academicEditorOpen?'open':''}><summary>學期週次設定</summary><p class="muted">目前：${current.schoolYear} 學年度${current.semester===1?'上學期':'下學期'}（台灣日期 ${esc(current.today)}）。每學期最多 21 週。可預先設定未來學期；各學期分開保存。</p>${enabled?'':'<p class="warning">請先執行 upgradePointBankV42 啟用週次設定；學生仍可使用日期。</p>'}<form id="semester-settings-form"><div class="grid"><div>${field('學年度（民國，例如 115）','termSchoolYear','number',e.schoolYear,'required min="1" max="999" step="1"')}</div><div><label for="termSemester">學期</label><select id="termSemester"><option value="1" ${e.semester===1?'selected':''}>上學期（8/1～隔年 1/31）</option><option value="2" ${e.semester===2?'selected':''}>下學期（隔年 2/1～7/31）</option></select></div></div>${field('第一週的星期一日期','termFirstMonday','date',e.firstMonday,'required')}<p class="muted small">請選星期一，不會自動假設開學週；修改基準不會搬動已收件紀錄。</p><p id="academicPreview" class="muted small" role="status"></p><div class="actions"><button type="submit" ${enabled?'':'disabled'}>儲存本學期基準</button></div></form>${terms.length?`<div class="table-scroll spacer"><table><thead><tr><th>學年度</th><th>學期</th><th>第一週星期一</th><th>操作</th></tr></thead><tbody>${terms.map(t=>`<tr><td>${t.schoolYear}</td><td>${t.semester===1?'上學期':'下學期'}</td><td>${esc(t.firstMonday)}</td><td><button type="button" class="secondary" data-action="selectAcademicTerm" data-year="${t.schoolYear}" data-semester="${t.semester}">編輯</button></td></tr>`).join('')}</tbody></table></div>`:''}</details>`;
+  }
+  function renderAcademicPreview(){
+    const e=state.academicEditor;if(!e)return;const value=$('termFirstMonday').value||e.firstMonday,first=academicMonday(value,1),last=academicMonday(value,21);
+    $('academicPreview').textContent=!value?'請設定此學期的第一週。':!first?'所選日期不是有效的星期一，請重新選擇。':'第 1 週：'+first+'；第 21 週：'+last+(last>academicEnd(e.schoolYear,e.semester)?'。超出學期範圍的週次無法提交。':'。');
+  }
+  function pointBatchLimits(){return state.config.batch||{maxEntries:10,maxTotalFileBytes:6291456};}
+  function newPointDraft(){
+    const category=state.home?.categories?.[0],suggested=Number(category?.['預設點數']);
+    const current=academicCurrentClient();
+    return {id:'d'+(++state.draftCounter),key:null,dateMode:'date',schoolYear:current.schoolYear,semester:current.semester,weekNumber:1,week:today(),categoryId:category?.['項目ID']||'',points:String(Number.isInteger(suggested)&&suggested>0?suggested:1),note:'',files:[],fileNames:[],expectedFiles:[],status:'draft',message:'',locked:false,resumeOnly:false,payload:null,touched:false};
+  }
+  function ensurePointDrafts(){if(!state.pointDrafts.length)state.pointDrafts.push(newPointDraft());}
+  function pointDraftHtml(draft,index){
+    const categories=state.home.categories||[],category=categories.find(c=>c['項目ID']===draft.categoryId),readOnly=draft.locked||draft.resumeOnly,disabled=readOnly?'disabled':'';
+    const attr=field=>`data-point-draft="${draft.id}" data-field="${field}"`;
+    const fileNames=draft.files.length?draft.files.map(f=>f.name):draft.fileNames;
+    const label=draft.status==='saved'?'已送出':draft.status==='sending'?'送出中':draft.status==='unknown'?'結果待確認':draft.status==='error'?'等待修正／重試':'未送出';
+    return `<section class="point-draft"><div class="row"><h3>第 ${index+1} 筆申請</h3><button id="remove-${draft.id}" type="button" class="secondary" data-action="removePointDraft" data-id="${draft.id}" ${state.busy?'disabled':''}>${draft.status==='saved'?'收起已送出':'收起此筆'}</button></div><p class="small ${draft.status==='error'||draft.status==='unknown'?'warning':'muted'}" id="status-${draft.id}">${label}${draft.message?'：'+esc(draft.message):''}</p><div class="grid"><div>${academicDateFields(draft,disabled)}</div><div><label for="category-${draft.id}">加分項目</label><select id="category-${draft.id}" required ${disabled} ${attr('categoryId')}>${!category&&draft.categoryId?`<option value="${esc(draft.categoryId)}" selected>原申請項目（已停用或更名）</option>`:''}${categories.map(c=>`<option value="${esc(c['項目ID'])}" ${draft.categoryId===c['項目ID']?'selected':''}>${esc(c['項目名稱'])}（上限 ${esc(c['單筆點數上限'])} 點）</option>`).join('')}</select></div></div>${field('申請點數','points-'+draft.id,'number',draft.points,`required min="1" max="${esc(category?.['單筆點數上限']||100000)}" step="1" ${disabled} ${attr('points')}`)}<label for="note-${draft.id}">表現說明（選填）</label><textarea id="note-${draft.id}" maxlength="1000" ${disabled} ${attr('note')}>${esc(draft.note)}</textarea><label for="files-${draft.id}">本筆佐證附件（選填）</label><input id="files-${draft.id}" type="file" multiple accept=".jpg,.jpeg,.png,.gif,.webp,.heic,.heif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.odt,.ods,.odp" ${draft.locked||!state.config.uploadEnabled?'disabled':''} ${attr('files')}><p class="muted small file-note" id="files-hint-${draft.id}">${fileNames.length?'已選／已提交：'+esc(fileNames.join('、')):state.config.uploadEnabled?'每筆最多 3 個附件，每個 3 MB。':'教師尚未啟用附件功能。'}</p>${draft.supplementRequestId&&!draft.receiptNo?'<p class="warning small">補件：請提供至少一個佐證附件；可使用新的檔案。補件完成後交由教師再次審核，原申請不會重複建立。</p>':''}${draft.resumeOnly&&!draft.supplementRequestId?`<p class="warning small">補傳模式：請選回尚未完成的原附件。原檔：${esc(draft.expectedFiles.join('、'))}</p>`:''}${draft.locked&&draft.status!=='saved'?'<p class="muted small">原內容已保留；再次送出會沿用同一識別碼，不會重複建立。收起表單不會刪除已建立的紀錄。</p>':''}</section>`;
+  }
+  /* v5：一週一張多向度表格。送出時每個有填點數的向度轉成一筆 draft，交給既有收件、重試與補傳流程；
+     pointDrafts 只保留需補件、補傳或重試的申請。 */
+  function formRules(){return state.config.form||{multiWeek:false,requiredPoints:[],requiredFiles:[]};}
+  function attendanceMissing(){return Boolean(state.config.attendance?.enabled&&state.home?.attendance&&state.home.attendance.value===null);}
+  function openRecordEdit(id){
+    const r=state.home?.records.find(r=>r['紀錄ID']===id);if(!r||!studentEditable(r)){notify('這筆申請已不能修改，請重新整理。',true);return;}
+    const category=state.home.categories.find(c=>c['項目ID']===r['項目ID']),current=academicCurrentClient(),week=String(r['週次起始日']);
+    const d={id:'recordEdit',recordId:id,version:r.reviewVersion,name:r['項目名稱快照'],max:Number(category?.['單筆點數上限'])||100000,points:String(r['申請點數']),note:r['學生說明']||'',dateMode:'date',week:week,manualDate:week,schoolYear:current.schoolYear,semester:current.semester,weekNumber:1,calendar:null};
+    // 啟用學期週次時，找出原日期對應的學期與週次，預設用週次方式顯示。
+    if(state.config.academic?.enabled)for(const t of state.config.academic.terms||[]){const n=Array.from({length:21},(_,i)=>i+1).find(n=>academicMonday(t.firstMonday,n)===week);if(n){Object.assign(d,{dateMode:'week',schoolYear:t.schoolYear,semester:t.semester,weekNumber:n});syncAcademicDraft(d,false);break;}}
+    state.recordEdit=d;$('recordEditBody').innerHTML=recordEditHtml();if(!$('recordEditDialog').open)$('recordEditDialog').showModal();
+  }
+  function recordEditHtml(){const d=state.recordEdit;return `<form id="record-edit-form"><p><strong>${esc(d.name)}</strong></p><div id="groupDate-recordEdit">${academicDateFields(d,'')}</div>${field('申請點數','recordEditPoints','number',d.points,`required min="1" max="${d.max}" step="1" inputmode="numeric"`)}<label for="recordEditNote">說明</label><textarea id="recordEditNote" maxlength="1000">${esc(d.note)}</textarea><p class="muted small">附件不能在這裡更換；附件放錯請刪除這筆後重新申請。老師處理後就不能再修改。</p><p id="recordEditError" class="warning" role="alert"></p><div class="actions"><button type="submit">儲存修改</button><button type="button" class="secondary" data-action="closeRecordEdit">取消</button></div></form>`;}
+  function closeRecordEdit(){state.recordEdit=null;if($('recordEditDialog').open)$('recordEditDialog').close();$('recordEditBody').innerHTML='';}
+  function submitRecordEdit(){
+    const d=state.recordEdit;if(!d)return;let p;
+    try{p=Object.assign({recordId:d.recordId,expectedVersion:d.version,points:$('recordEditPoints').value,note:$('recordEditNote').value,week:d.dateMode==='week'?d.week:$('week-recordEdit').value},academicPayload(d));}catch(e){$('recordEditError').textContent=e.message;return;}
+    task(async()=>{try{const r=await rpc('editPendingRecord',p);closeRecordEdit();applyRecordResult(r);render();notify('已修改這筆申請。');}catch(e){if($('recordEditError'))$('recordEditError').textContent=e.message;throw e;}});
+  }
+  function deletePendingRecord(id){
+    const r=state.home?.records.find(r=>r['紀錄ID']===id);if(!r||!studentEditable(r)){notify('這筆申請已不能刪除，請重新整理。',true);return;}
+    if(!confirm('確定刪除這筆申請？\n'+r['週次起始日']+'　'+r['項目名稱快照']+'　'+r['申請點數']+' 點\n刪除後不能復原，需要的話請重新申請。'))return;
+    task(async()=>{const result=await rpc('deletePendingRecord',{recordId:id,expectedVersion:r.reviewVersion});state.home.records=state.home.records.filter(x=>x['紀錄ID']!==id);state.home.summary=result.summary;state.pointDrafts=state.pointDrafts.filter(d=>d.serverRecordId!==id&&d.originalRecordId!==id);savePointProgress();render();notify('已刪除這筆申請。');});
+  }
+  function newPointGroup(){
+    const current=academicCurrentClient(),g={id:'g'+(++state.draftCounter),dateMode:'date',schoolYear:current.schoolYear,semester:current.semester,weekNumber:1,week:today(),calendar:null,rows:{}};
+    if(state.config.academic?.enabled&&academicTerm(g.schoolYear,g.semester)){g.manualDate=g.week;g.dateMode='week';syncAcademicDraft(g,true);}
+    return g;
+  }
+  function ensurePointGroups(){if(!state.pointGroups?.length)state.pointGroups=[newPointGroup()];}
+  function pointRow(g,id){return g.rows[id]||(g.rows[id]={points:'',note:'',files:[]});}
+  function pointFileHint(row,required){
+    if(!state.config.uploadEnabled)return '教師尚未啟用附件功能。';
+    return row.files.length?'已選：'+row.files.map(f=>f.name).join('、'):required?'必附佐證：最多 3 個，每個 3 MB。':'選填：最多 3 個，每個 3 MB。';
+  }
+  function pointGroupHtml(g,index){
+    const rules=formRules(),multi=state.pointGroups.length>1;
+    const rows=(state.home.categories||[]).map((c,i)=>{
+      const id=c['項目ID'],row=g.rows[id]||{points:'',note:'',files:[]},needPoints=rules.requiredPoints.includes(id),needFiles=rules.requiredFiles.includes(id),base=g.id+'-'+i,name=esc(c['項目名稱']);
+      const attr=f=>`data-point-group="${g.id}" data-category="${esc(id)}" data-field="${f}"`;
+      return `<tr><th scope="row">${name}${needPoints?'<span class="tag-required">必填</span>':''}${c['說明']?`<span class="small muted point-desc">${esc(c['說明'])}</span>`:''}</th><td data-label="申請點數"><input id="gp-${base}" type="number" inputmode="numeric" min="0" max="${esc(c['單筆點數上限'])}" step="1" placeholder="${needPoints?'必填':'選填'}" value="${esc(row.points)}" aria-label="${name}申請點數" ${attr('points')}><span class="small muted">上限 ${esc(c['單筆點數上限'])} 點</span></td><td data-label="說明"><input id="gn-${base}" type="text" maxlength="1000" placeholder="補充說明（選填）" value="${esc(row.note)}" aria-label="${name}說明" ${attr('note')}></td><td data-label="佐證附件${needFiles?'（必附）':''}"><input id="gf-${base}" type="file" multiple accept=".jpg,.jpeg,.png,.gif,.webp,.heic,.heif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.odt,.ods,.odp" aria-label="${name}佐證附件" ${state.config.uploadEnabled?'':'disabled'} ${attr('files')}><span class="small ${needFiles&&!row.files.length?'warning':'muted'}" id="gfh-${base}">${esc(pointFileHint(row,needFiles))}</span></td></tr>`;
+    }).join('');
+    return `<section class="point-group"><div class="row"><h3>${multi?`第 ${index+1} 週`:'申請週次'}</h3>${multi?`<button type="button" class="secondary" data-action="removePointGroup" data-id="${g.id}">移除此週</button>`:''}</div><div id="groupDate-${g.id}">${academicDateFields(g,'')}</div>${rows?`<div class="table-scroll"><table class="point-grid"><thead><tr><th>加分項目</th><th>申請點數</th><th>說明</th><th>佐證附件</th></tr></thead><tbody>${rows}</tbody></table></div>`:'<p class="muted">目前沒有開放申請的加分項目。</p>'}</section>`;
+  }
+  function pointDraftListHtml(){return state.pointDrafts.length?`<h3 class="spacer">需要處理的申請</h3><p class="muted small">需要補件、補傳或重試的申請會和上方新填的內容一起送出。</p>${state.pointDrafts.map(pointDraftHtml).join('')}`:'';}
+  function pointBatchFormHtml(){
+    ensurePointGroups();const rules=formRules(),missing=attendanceMissing();
+    return `<form id="points-form">${missing?'<p class="warning">請先完成上方的「本學期出席堂數（每週）」，才能申請點數。</p>':''}<p class="muted small">填寫各向度的申請點數，空白或 0 表示不申請；標示「必填」的向度一定要填，沒有可填 0。每個向度可附最多 3 個佐證附件（每個 3 MB，整批 6 MB）。</p><div id="pointGroupList">${state.pointGroups.map(pointGroupHtml).join('')}</div>${rules.multiWeek?`<div class="actions"><button id="addPointGroup" type="button" class="secondary" data-action="addPointGroup" ${state.pointGroups.length>=5?'disabled':''}>＋ 新增一週</button></div>`:''}<div id="pointDraftList">${pointDraftListHtml()}</div><div class="actions"><button id="submitPointBatch" type="submit" ${missing||(!state.home.categories.length&&!state.pointDrafts.length)?'disabled':''}>${pointSubmitLabel()}</button></div><p id="pointBatchHint" class="muted small">每個有填點數的向度會各自成為一筆待審核申請，教師可逐項審核。</p></form>`;
+  }
+  function pointSubmitLabel(){const pending=state.pointDrafts.filter(d=>d.status!=='saved');return pending.some(d=>['error','unknown'].includes(d.status))?'送出申請（含重試 '+pending.length+' 筆）':'送出申請';}
+  function renderPointGroups(){ensurePointGroups();$('pointGroupList').innerHTML=state.pointGroups.map(pointGroupHtml).join('');updatePointBatchButtons();}
+  function updatePointGroupRow(target){
+    const g=state.pointGroups?.find(g=>g.id===target.dataset.pointGroup);if(!g)return;const id=target.dataset.category,row=pointRow(g,id),fieldName=target.dataset.field;
+    if(fieldName==='files'){row.files=Array.from(target.files||[]);const hint=$(target.id.replace(/^gf-/,'gfh-'));if(hint)hint.textContent=pointFileHint(row,formRules().requiredFiles.includes(id));return;}
+    if(['points','note'].includes(fieldName))row[fieldName]=target.value;
+  }
+  /* 只重畫日期區塊，避免同一週已選的附件欄位被清空。 */
+  function updatePointGroupDate(g,target){
+    const fieldName=target.dataset.field;
+    if(fieldName==='week'){g.week=target.value;return;}
+    if(fieldName==='dateMode'){if((g.dateMode||'date')===target.value)return;if(target.value==='week'){g.manualDate=g.week;g.dateMode='week';syncAcademicDraft(g,true);}else{g.dateMode='date';g.week=g.manualDate||today();g.calendar=null;}}
+    else if(['schoolYear','semester','weekNumber'].includes(fieldName)){g[fieldName]=Number(target.value);syncAcademicDraft(g,fieldName!=='weekNumber');}
+    else return;
+    $('groupDate-'+g.id).innerHTML=academicDateFields(g,'');
+  }
+  function buildGroupDrafts(){
+    if(attendanceMissing())throw new Error('請先填寫本學期出席堂數（每週），再申請點數。');
+    const rules=formRules(),categories=state.home.categories||[],limits=pointBatchLimits(),pending=state.pointDrafts.filter(d=>d.status!=='saved'),created=[],multi=state.pointGroups.length>1;
+    if(!rules.multiWeek&&multi)throw new Error('教師目前未開放一次申請多週，請只保留一週。');
+    state.pointGroups.forEach((g,gi)=>{
+      const where=multi?`第 ${gi+1} 週`:'',entries=[];
+      const blank=categories.every(c=>{const row=g.rows[c['項目ID']];return !row||(String(row.points).trim()===''&&!row.files.length);});
+      if(blank&&pending.length&&!multi)return; // 只重試或補件時，不要求重填空白表格。
+      for(const c of categories){
+        const id=c['項目ID'],row=g.rows[id]||{points:'',note:'',files:[]},raw=String(row.points??'').trim(),name=where+'「'+c['項目名稱']+'」',max=Number(c['單筆點數上限'])||100000;
+        if(raw===''){if(rules.requiredPoints.includes(id))throw new Error(name+'為必填，沒有可填 0。');if(row.files.length)throw new Error(name+'已選附件，請填寫申請點數。');continue;}
+        const n=Number(raw);
+        if(!Number.isInteger(n)||n<0||n>max)throw new Error(name+'的點數需為 0～'+max+' 的整數。');
+        if(n===0){if(row.files.length)throw new Error(name+'填 0 時不需附件，請移除附件或填寫點數。');continue;}
+        if(rules.requiredFiles.includes(id)&&!row.files.length)throw new Error(name+'需附佐證附件。');
+        if(row.files.length>3||row.files.some(f=>!f.size||f.size>3145728))throw new Error(name+'最多 3 個附件，每個上限 3 MB，且不可為空檔。');
+        entries.push({c,row,n});
+      }
+      if(!entries.length)return;
+      if(g.dateMode==='week')academicPayload(g);else if(!g.week)throw new Error(where+'請選擇紀錄日期。');else if(g.week>today())throw new Error('不能提交未來日期。');
+      entries.forEach(({c,row,n})=>{const d=newPointDraft();Object.assign(d,{dateMode:g.dateMode,schoolYear:g.schoolYear,semester:g.semester,weekNumber:g.weekNumber,week:g.week,calendar:g.calendar?{...g.calendar}:null,categoryId:c['項目ID'],points:String(n),note:String(row.note||'').trim(),files:[...row.files],fileNames:row.files.map(f=>f.name),touched:true});created.push(d);});
+    });
+    if(!created.length&&!pending.length)throw new Error('請至少填寫一個向度的申請點數。');
+    if(created.length+pending.length>limits.maxEntries)throw new Error('每次最多送出 '+limits.maxEntries+' 個向度的申請，請減少週數或分次送出。');
+    if([...created,...pending].reduce((n,d)=>n+d.files.reduce((s,f)=>s+Number(f.size||0),0),0)>limits.maxTotalFileBytes)throw new Error('整批附件合計上限 6 MB，請減少檔案或分次送出。');
+    return created;
+  }
+  function updatePointBatchButtons(){
+    const pending=state.pointDrafts.filter(d=>d.status!=='saved'),add=$('addPointGroup'),submit=$('submitPointBatch');
+    if(add)add.disabled=state.busy||(state.pointGroups?.length||0)>=5;
+    if(submit){submit.disabled=state.busy||attendanceMissing()||(!state.home?.categories?.length&&!pending.length);submit.textContent=pointSubmitLabel();}
+    state.pointDrafts.forEach(d=>{const button=$('remove-'+d.id);if(button)button.disabled=state.busy;});
+  }
+  function renderPointDrafts(){$('pointDraftList').innerHTML=pointDraftListHtml();updatePointBatchButtons();}
+  function capturePointDraftInputs(){
+    state.pointDrafts.forEach(d=>{
+      if(d.locked)return;
+      if(!d.resumeOnly)[...(d.dateMode==='week'?[]:[['week','week-']]),['categoryId','category-'],['points','points-'],['note','note-']].forEach(([key,prefix])=>{const node=$(prefix+d.id);if(node&&typeof node.value==='string'){if(d[key]!==node.value)d.touched=true;d[key]=node.value;}});
+      const files=$('files-'+d.id);if(files?.files?.length)d.files=Array.from(files.files);
+    });
+  }
+  function updatePointDraftField(target){
+    if(state.recordEdit&&target.dataset.pointDraft===state.recordEdit.id){if(target.dataset.field!=='week')updatePointGroupDate(state.recordEdit,target);else state.recordEdit.week=target.value;return;}
+    const group=state.pointGroups?.find(g=>g.id===target.dataset.pointDraft);if(group){updatePointGroupDate(group,target);return;}
+    const d=state.pointDrafts.find(d=>d.id===target.dataset.pointDraft),fieldName=target.dataset.field;
+    if(!d||d.locked||d.status==='saved'||(d.resumeOnly&&fieldName!=='files'))return;
+    if(fieldName==='dateMode'&&(d.dateMode||'date')===target.value)return;
+    d.touched=true;
+    if(['dateMode','schoolYear','semester','weekNumber'].includes(fieldName)){
+      capturePointDraftInputs();
+      if(fieldName==='dateMode'){if(target.value==='week'){d.manualDate=d.week;d.dateMode='week';syncAcademicDraft(d,true);}else{d.dateMode='date';d.week=d.manualDate||today();d.calendar=null;}}
+      else{d[fieldName]=Number(target.value);syncAcademicDraft(d,fieldName!=='weekNumber');}
+      d.key=null;d.payload=null;d.status='draft';d.message='';renderPointDrafts();return;
+    }
+    if(fieldName==='files'){d.files=Array.from(target.files||[]);d.fileNames=d.files.map(f=>f.name);$('files-hint-'+d.id).textContent=d.fileNames.length?'已選：'+d.fileNames.join('、'):'尚未選取附件。';}
+    else if(['week','categoryId','points','note'].includes(fieldName))d[fieldName]=target.value;
+    if(fieldName==='categoryId'){
+      const category=state.home.categories.find(c=>c['項目ID']===d.categoryId);
+      if(category){d.points=String(category['預設點數']);$('points-'+d.id).value=d.points;$('points-'+d.id).max=category['單筆點數上限'];}
+    }
+    if(!d.resumeOnly)d.key=null;
+    d.payload=null;d.status='draft';d.message='';$('status-'+d.id).textContent='未送出';updatePointBatchButtons();
+  }
+  async function preparePointDraftBatch(drafts){
+    if(!drafts.length||drafts.length>pointBatchLimits().maxEntries)throw new Error('每批請保留 1 至 10 筆未完成申請。');
+    const total=drafts.reduce((sum,d)=>sum+(d.payload?.files||d.files).reduce((n,f)=>n+Number(f.size||0),0),0);
+    if(total>pointBatchLimits().maxTotalFileBytes)throw new Error('整批附件合計上限 6 MB，請減少檔案或分批提交。');
+    const output=[];
+    for(const d of drafts){
+      if(d.payload){output.push(d.payload);continue;}
+      if(!d.categoryId)throw new Error('請先選擇每一筆的加分項目。');
+      if(d.resumeOnly&&d.files.length!==d.expectedFiles.length)throw new Error('補傳時請選回原本的全部附件。');
+      const requestKey=d.key||key();
+      const files=await readUploadFiles(d.files);
+      output.push({key:requestKey,week:d.week,categoryId:d.categoryId,points:d.points,note:d.note,files:files});
+    }
+    return output;
+  }
+  function markPointBatchUnknown(drafts,message){drafts.forEach(d=>{if(d.status==='saved')return;d.status='unknown';d.locked=true;d.message='尚未確認結果，請以原內容重試。'+(message||'');});}
+  function applyPointBatchResult(drafts,response){
+    if(!Array.isArray(response.results))throw new Error('伺服器回應格式不正確，請保留原內容重試。');
+    drafts.forEach(d=>{
+      const outcome=response.results.find(r=>r.key===d.key);
+      if(!outcome){markPointBatchUnknown([d],'');return;}
+      if(outcome.record)applyRecordResult({record:outcome.record,summary:response.summary});
+      d.message=outcome.message||'';
+      if(outcome.ok){d.status='saved';d.locked=true;d.resumeOnly=false;d.fileNames=(outcome.record?.attachments||[]).map(f=>f.name);d.files=[];d.payload=null;}
+      else{
+        d.status='error';
+        if(outcome.notAttempted&&!outcome.retryLocked){d.locked=false;d.resumeOnly=false;d.payload=null;d.key=null;}
+        else if(outcome.notAttempted&&outcome.record?.uploadPending){
+          const record=outcome.record;d.locked=false;d.resumeOnly=true;d.payload=null;d.key=record['提交識別碼'];d.week=record['週次起始日'];d.categoryId=record['項目ID'];d.points=String(record['申請點數']);d.note=record['學生說明'];d.expectedFiles=record.attachments.map(f=>f.name);
+        }else d.locked=true;
+        if(d.supplementRequestId)d.resumeOnly=true;
+      }
+    });
+    if(response.summary)state.home.summary=response.summary;
+  }
+  async function submitLegacyPointDrafts(){
+    if(!state.config.batch)throw new Error('請教師同步更新 Code.gs 與部署版本，以啟用多筆申請。');
+    const drafts=state.pointDrafts.filter(d=>d.status!=='saved');
+    notify('正在檢查 '+drafts.length+' 筆申請與附件…');
+    const entries=await preparePointDraftBatch(drafts);
+    drafts.forEach((d,i)=>{d.key=entries[i].key;d.payload=entries[i];d.locked=true;d.status='sending';d.message='';});
+    renderPointDrafts();notify('正在送出 '+entries.length+' 筆申請，請保留此頁面…');
+    try{
+      const response=await rpc('submitPointsBatch',{entries:entries});
+      applyPointBatchResult(drafts,response);
+      const remaining=state.pointDrafts.filter(d=>d.status!=='saved').length;
+      if(!remaining)state.pointDrafts=[];
+      renderStudent();
+      notify(remaining?'已完成 '+response.succeeded+' 筆；其他項目請依各筆提示修正或重試。成功項目不會再次送出。':'已送出 '+response.succeeded+' 筆申請，等待教師審核。',Boolean(remaining));
+    }catch(e){markPointBatchUnknown(drafts,e.message);renderStudent();throw e;}
+  }
+  function resumePointDraft(recordId){
+    const record=state.home.records.find(r=>r['紀錄ID']===recordId);if(!record)return;
+    capturePointDraftInputs();
+    const entryKey=record.receiptEntryKey||record['提交識別碼'];
+    const existing=state.pointDrafts.find(d=>d.key===entryKey);
+    if(existing){notify('此筆已在申請表中，請直接重試。');$('points-form').scrollIntoView({behavior:'smooth'});return;}
+    if(state.pointDrafts.length===1){const first=state.pointDrafts[0];if(!first.touched&&!first.locked&&!first.resumeOnly&&!first.note&&!first.files.length)state.pointDrafts=[];}
+    if(state.pointDrafts.length>=pointBatchLimits().maxEntries){notify('請先送出或收起部分申請，再補傳附件。',true);return;}
+    const d=newPointDraft();Object.assign(d,{dateMode:'date',originalCalendar:record.calendar||null,key:entryKey,week:record['週次起始日'],categoryId:record['項目ID'],points:String(record['申請點數']),note:record['學生說明'],resumeOnly:true,expectedFiles:record.attachments.filter(f=>f.status!=='已完成'&&(!record.activeAttachmentIds||record.activeAttachmentIds.includes(f.id))).map(f=>f.name),status:'error',message:'請選回原附件後送出。',receiptNo:record.receiptNo||null,serverRecordId:record['紀錄ID']});
+    state.pointDrafts.push(d);renderPointDrafts();notify('已加入補傳項目。請選回尚未完成的原附件；已完成的附件不必重傳。');$('points-form').scrollIntoView({behavior:'smooth'});
+  }
+  let receiptPollTimer=0;
+  function receiptPanelHtml(){
+    if(!state.config.staged)return '<section class="card"><p class="warning">新版收件功能尚未啟用，請教師依更新說明執行 upgradePointBankV4。</p></section>';
+    const receipts=state.home?.receipts||[],teacher=state.me?.role==='教師';
+    return `<section class="card"><h2>${teacher?'收件與異常管理':'我的收件進度'}</h2><p class="muted small">${teacher?'內容保存後即可查詢收件編號。附件還沒傳完的申請會列在待審核工作台的「處理中」，可以等學生補傳，或免附件直接核准。':'內容保存後即可查詢收件編號。附件未完成的申請不會進入批核；重新登入後可從明細補傳。'}</p><div class="actions"><label class="sr" for="receiptLookup">收件編號</label><input id="receiptLookup" placeholder="輸入完整收件編號" maxlength="80" style="max-width:380px"><button type="button" class="secondary" data-action="receiptLookup">查詢收件</button></div>${teacher&&receipts.length?receiptFiltersHtml():''}<div id="receiptList">${teacher?receiptListHtml():receiptTableHtml(receipts,false)}</div></section>`;
+  }
+  /* v5.6：教師收件管理可依學生姓名／班級／座號／收件編號搜尋，並依狀態篩選（只在瀏覽器篩選，不連伺服器）。 */
+  const RECEIPT_STATES=['附件上傳中','附件未完成','需教師協助','處理中','需補件','已完成','已取消','已轉補件'];
+  function receiptTableHtml(list,teacher){return list.length?`<div class="table-scroll"><table><thead><tr><th>收件編號</th>${teacher?'<th>學生</th>':''}<th>狀態</th><th>筆數／附件</th><th>操作</th></tr></thead><tbody>${list.map(r=>{const student=teacher?studentOf(r.studentId):null;return `<tr><td class="small">${esc(r.receiptNo)}<br>${esc(r.created)}</td>${teacher?`<td class="receipt-student">${esc(student?.['班級']||'')} ${student?esc(seatNo(student['座號']))+' 號':''}<br>${esc(student?.['姓名']||'學生')}</td>`:''}<td>${badge(r.state)}</td><td>${r.itemCount} 筆／附件 ${r.fileDone}／${r.fileCount}</td><td><button type="button" class="secondary" data-action="receiptOpen" data-id="${esc(r.receiptNo)}">檢視進度</button></td></tr>`;}).join('')}</tbody></table></div>`:'<p class="muted spacer">目前還沒有新版收件紀錄。</p>';}
+  function receiptMatches(r){
+    const f=state.receiptState||'',q=String(state.receiptSearch||'').trim().toLowerCase();
+    if(f==='open'?r.complete:f&&r.state!==f)return false;if(!q)return true;
+    const s=studentOf(r.studentId);return q.split(/\s+/).every(word=>[r.receiptNo,s?.['姓名'],s?.['班級'],s?seatNo(s['座號'])+'號':'',s?.['學生ID']].join(' ').toLowerCase().includes(word));
+  }
+  function receiptFiltersHtml(){
+    const list=state.home.receipts||[],f=state.receiptState||'',counts=new Map();list.forEach(r=>counts.set(r.state,(counts.get(r.state)||0)+1));
+    return `<div class="queue-filters receipt-filters"><label>學生或收件編號<input id="receiptSearch" type="search" placeholder="姓名、班級、座號或編號" maxlength="80" value="${esc(state.receiptSearch||'')}"></label><label>狀態<select id="receiptState"><option value="">全部狀態（${list.length}）</option><option value="open" ${f==='open'?'selected':''}>未完成，需要追蹤（${list.filter(r=>!r.complete).length}）</option>${RECEIPT_STATES.filter(x=>counts.has(x)||x===f).map(x=>`<option value="${x}" ${x===f?'selected':''}>${x}（${counts.get(x)||0}）</option>`).join('')}</select></label><button type="button" class="secondary" data-action="receiptClearFilters">清除篩選</button></div>`;
+  }
+  function receiptListHtml(){
+    const h=state.home,list=h.receipts||[],shown=list.filter(receiptMatches),filtered=Boolean(String(state.receiptSearch||'').trim()||state.receiptState),more=Number(h.receiptTotal)>list.length;
+    const note=`<p class="muted small" aria-live="polite">${filtered?`符合 ${shown.length} 批／已載入 ${list.length} 批`:`已載入 ${list.length} 批`}${more?`。目前列出全部未完成與最近 50 批已完成的收件，共 ${esc(h.receiptTotal)} 批；要搜尋較早的收件，請按 <button type="button" class="link" data-action="receiptLoadAll">載入全部收件</button>`:''}</p>`;
+    return note+(list.length&&!shown.length?'<div class="empty">沒有符合條件的收件。</div>':`<div class="scroll-pane receipt-pane">${receiptTableHtml(shown,true)}</div>`);
+  }
+  function renderReceiptList(){if($('receiptList')&&state.me?.role==='教師')$('receiptList').innerHTML=receiptListHtml();}
+  function acceptReceipt(data){
+    const summary={receiptNo:data.receiptNo,studentId:data.studentId,created:data.created,state:data.state,complete:data.complete,itemCount:data.itemCount,fileCount:data.fileCount,fileDone:data.fileDone};
+    if(state.home){const list=state.home.receipts||(state.home.receipts=[]),index=list.findIndex(r=>r.receiptNo===data.receiptNo);if(index>=0)list[index]=summary;else list.unshift(summary);}
+    for(const item of data.items||[])if(item.record)applyRecordResult({record:item.record,summary:data.summary});
+    if(state.receiptView?.receiptNo===data.receiptNo)state.receiptView=data;
+  }
+  function renderReceiptView(data){
+    state.receiptView=data;$('receiptTitle').textContent='收件 '+data.receiptNo;
+    const teacher=state.me?.role==='教師';
+    $('receiptBody').innerHTML=`<p><strong>${esc(data.state)}</strong> · ${data.itemCount} 筆 · 附件已確認 ${data.fileDone}／${data.fileCount}</p><p class="muted small" id="receiptNotice">${data.state==='需補件'?'教師已要求補件，請回點數明細按「補件／重新送審」，可提供新的佐證檔案。':data.state==='已轉補件'?'此收件已由後續補件取代，請以最新點數明細與收件進度為準。':data.state==='已取消'?'此收件已取消，請查看教師回覆。':data.complete?'此批次已完成收件處理；點數仍依各筆教師審核結果計算。':'尚未傳到伺服器的附件，需由學生選回原檔補傳。此畫面會定期更新進度。'}</p><div class="actions"><button type="button" class="secondary" data-action="receiptRefresh">更新進度</button>${!data.complete?'<button type="button" class="secondary" data-action="receiptRecover">檢核已收到的附件</button>':''}${teacher?`<button type="button" data-action="openStudent" data-id="${esc(data.studentId)}">開啟學生明細／審核</button>`:''}</div>${(data.items||[]).map(item=>{const r=item.record;return `<section class="card spacer"><h3>${esc(r?.['項目名稱快照']||item.request?.categoryName||'申請建檔中')} ${r?esc(r['申請點數'])+' 點':''}</h3><p>${badge(item.state)} ${r?badge(r['審核狀態']):''}</p>${item.error?`<p class="warning file-note">${esc(item.error)}</p>`:''}${!r&&item.request?`<p>${esc(item.request.points)} 點 · ${esc(item.request.week)}${item.request.calendar?'<br>'+esc(academicLabel(item.request.calendar)):''}<br>${esc(item.request.note)}</p>`:''}${r?`<p class="muted">${esc(r['週次起始日'])} · ${esc(r['學生說明'])}</p>${attachmentHtml(r,teacher)}`:''}</section>`;}).join('')}`;
+  }
+  function closeReceiptView(){clearTimeout(receiptPollTimer);receiptPollTimer=0;if($('receiptDialog').open)$('receiptDialog').close();state.receiptView=null;$('receiptBody').innerHTML='';}
+  function scheduleReceiptPoll(){
+    clearTimeout(receiptPollTimer);if(!$('receiptDialog').open||!state.receiptView||state.receiptView.complete||state.receiptView.state==='需補件')return;
+    const number=state.receiptView.receiptNo;
+    receiptPollTimer=setTimeout(async()=>{
+      if(!$('receiptDialog').open||state.receiptView?.receiptNo!==number)return;
+      if(state.busy||state.stagedSending){scheduleReceiptPoll();return;}
+      try{const data=await rpc('receiptStatus',{receiptNo:number});if(!$('receiptDialog').open||state.receiptView?.receiptNo!==number)return;acceptReceipt(data);if(!$('imagePreview').open)renderReceiptView(data);scheduleReceiptPoll();}
+      catch(e){if($('receiptDialog').open&&state.receiptView?.receiptNo===number)$('receiptNotice').textContent=e.message;}
+    },10000+Math.floor(Math.random()*3000));
+  }
+  function setSubmissionProgress(title,detail,done,total,numbers){
+    $('submissionTitle').textContent=title;$('submissionDetail').textContent=detail;$('submissionBar').max=Math.max(1,total);$('submissionBar').value=done;
+    $('submissionCounter').textContent=total?'已確認附件 '+done+'／'+total:'正在確認申請內容與附件清單';$('submissionReceipts').textContent=numbers?.length?'收件編號：\n'+numbers.join('\n'):'';
+  }
+  async function stagedRpc(action,p){
+    for(let attempt=0;;attempt++){
+      try{return await rpc(action,p);}catch(e){if(attempt>=2||!/稍後|正在處理|忙碌|登記其他|連線|網路|timeout|network/i.test(e.message))throw e;if(state.stagedSending){$('submissionDetail').textContent='目前連線或系統忙碌，正在進行第 '+(attempt+1)+' 次自動重試；原申請識別碼會保留。';submissionClock.bucket=null;}await new Promise(resolve=>setTimeout(resolve,700*Math.pow(2,attempt)+Math.random()*400));}
+    }
+  }
+  async function readFileManifest(file){
+    if(fileManifests.has(file))return fileManifests.get(file);
+    if(!window.crypto?.subtle)throw new Error('此瀏覽器不支援附件完整性檢查，請使用較新的瀏覽器。');
+    const buffer=typeof file.arrayBuffer==='function'?await file.arrayBuffer():await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('無法讀取附件。'));reader.readAsArrayBuffer(file);});
+    const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',buffer));
+    const manifest={name:file.name.trim().replace(/[\/\\\u0000-\u001f]/g,'_'),size:file.size,digest:btoa(String.fromCharCode(...digest)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};fileManifests.set(file,manifest);return manifest;
+  }
+  async function prepareStagedDrafts(drafts){
+    if(!drafts.length||drafts.length>pointBatchLimits().maxEntries)throw new Error('每次請保留 1 至 10 筆未完成申請。');
+    const selected=drafts.reduce((n,d)=>n+d.files.reduce((sum,f)=>sum+f.size,0),0);if(selected>pointBatchLimits().maxTotalFileBytes)throw new Error('整批附件合計上限為 6 MB。');
+    for(const d of drafts){
+      if(d.files.length>3||d.files.some(f=>!f.size||f.size>3145728))throw new Error('每筆最多 3 個附件，每個上限 3 MB，且不可為空檔。');
+      if(d.receiptNo)continue;
+      if(d.payload?.files?.every(f=>f.digest)&&d.key)continue;
+      if(!d.categoryId)throw new Error('請選擇每筆的加分項目。');
+      const files=[];for(const file of d.files)files.push(await readFileManifest(file));
+      if(d.supplementRequestId&&!files.length)throw new Error('補件至少需要一個附件。');
+      const dateChoice=academicPayload(d);
+      d.key=d.key||key();d.payload={...dateChoice,key:d.key,week:d.week,categoryId:d.categoryId,points:d.points,note:d.note,files:files};
+      if(d.supplementRequestId)Object.assign(d.payload,{kind:'supplement',recordId:d.originalRecordId,requestId:d.supplementRequestId});
+    }
+  }
+  function syncStagedDraft(d,item){
+    if(['已退回','已作廢'].includes(item.record?.['審核狀態'])){d.status='saved';d.outcome='已取消';d.locked=true;d.files=[];d.payload=null;return;}
+    if(item.state==='需補件'){d.status='saved';d.outcome='需補件';d.locked=true;d.files=[];d.payload=null;return;}
+    if(item.record){d.serverRecordId=item.record['紀錄ID'];d.receiptNo=item.record.receiptNo||d.receiptNo;}
+    d.serverFiles=item.files||d.serverFiles||[];d.message=item.error||'';
+    if(['已完成','已取消','已轉補件'].includes(item.state)){d.status='saved';d.outcome=item.record?.['審核狀態']==='已核准'?'已核准':item.state;d.locked=true;d.resumeOnly=false;d.fileNames=d.serverFiles.map(f=>f.name);d.files=[];d.payload=null;}
+    else{d.status='sending';d.locked=true;}
+  }
+  const fileManifests=new WeakMap();
+  const submissionClock={timer:0,started:0,phaseStarted:0,bucket:null,queue:[],profile:{}};
+  function timingBucket(action,p){return action==='receiveBatch'?'receive:'+(p.entries.length<=3?'small':'many'):'upload:'+(p.file.size<=262144?'small':p.file.size<=1048576?'medium':'large');}
+  function tickSubmissionClock(){
+    if(!state.stagedSending)return;
+    const now=Date.now();$('submissionElapsed').textContent='已等待 '+Math.floor((now-submissionClock.started)/1000)+' 秒';
+    const profile=submissionClock.profile,buckets=[submissionClock.bucket,...submissionClock.queue];
+    if(!buckets.length||buckets.some(b=>!b||!profile[b])){$('submissionEstimate').textContent='正在依實際進度處理；相近資料足夠後會顯示預估剩餘時間。';return;}
+    const elapsed=now-submissionClock.phaseStarted,low=Math.max(0,buckets.reduce((n,b)=>n+profile[b].lowMs,0)-elapsed),high=Math.max(0,buckets.reduce((n,b)=>n+profile[b].highMs,0)-elapsed);
+    $('submissionEstimate').textContent=high<=0?'目前處理較久，正在等待伺服器確認。':'預估還需約 '+Math.max(1,Math.ceil(low/1000))+'～'+Math.max(1,Math.ceil(high/1000))+' 秒（依近期處理時間估算，實際受網路影響）';
+  }
+  function startSubmissionClock(){stopSubmissionClock();Object.assign(submissionClock,{started:Date.now(),phaseStarted:Date.now(),bucket:null,queue:[],profile:state.config.timing||{}});submissionClock.timer=setInterval(tickSubmissionClock,1000);tickSubmissionClock();}
+  function stopSubmissionClock(){if(submissionClock.timer){clearInterval(submissionClock.timer);submissionClock.timer=0;}}
+  async function callSubmission(action,p,queue=[]){
+    submissionClock.bucket=['receiveBatch','uploadEvidence'].includes(action)?timingBucket(action,p):null;submissionClock.queue=queue;submissionClock.phaseStarted=Date.now();tickSubmissionClock();
+    const data=await stagedRpc(action,p);if(data.telemetry){state.config.timing=data.telemetry.profile||{};submissionClock.profile=state.config.timing;}return data;
+  }
+  function progressStorageKey(){return state.me?.id?'pbProgress41:'+state.me.id:null;}
+  function savePointProgress(){
+    const name=progressStorageKey();if(!name)return;
+    try{const drafts=state.pointDrafts.filter(d=>d.status!=='saved'&&(d.payload||d.receiptNo)).map(d=>{const copy={...d};delete copy.files;return copy;});drafts.length?sessionStorage.setItem(name,JSON.stringify(drafts)):sessionStorage.removeItem(name);}catch(e){/* 儲存空間不可用不影響後端收件；原頁識別碼仍保留。 */}
+  }
+  function restorePointProgress(){
+    if(state.pointDrafts.length)return;const name=progressStorageKey();if(!name)return;
+    try{const saved=JSON.parse(sessionStorage.getItem(name)||'[]');if(!Array.isArray(saved)||saved.length>10)return;state.pointDrafts=saved.filter(d=>d&&d.key).map(d=>({...d,id:'d'+(++state.draftCounter),files:[],status:'unknown',locked:!d.receiptNo,resumeOnly:Boolean(d.receiptNo),message:'已恢復原提交識別碼；請先重試核對進度，缺少的附件需重新選檔。'}));}catch(e){}
+  }
+  function startSupplementDraft(recordId){
+    const r=state.home.records.find(r=>r['紀錄ID']===recordId);if(!r?.supplementRequest){notify('補件要求已變更，請更新資料後再試。',true);return;}
+    if(state.pointDrafts.some(d=>d.originalRecordId===recordId&&d.supplementRequestId===r.supplementRequest.id)){notify('這筆補件已在申請表中。');$('points-form').scrollIntoView({behavior:'smooth'});return;}
+    if(state.pointDrafts.length===1&&!state.pointDrafts[0].touched&&!state.pointDrafts[0].payload&&!state.pointDrafts[0].resumeOnly)state.pointDrafts=[];
+    if(state.pointDrafts.length>=10){notify('請先送出或收起部分申請。',true);return;}
+    const d=newPointDraft();Object.assign(d,{dateMode:'date',originalCalendar:r.calendar||null,originalRecordId:recordId,supplementRequestId:r.supplementRequest.id,week:r['週次起始日'],categoryId:r['項目ID'],points:String(r['申請點數']),note:r['學生說明'],resumeOnly:true,touched:true,message:r.supplementRequest.note||'請提供佐證附件後重新送審。'});state.pointDrafts.push(d);renderPointDrafts();$('points-form').scrollIntoView({behavior:'smooth'});
+  }
+  function pendingUploadBuckets(drafts,excludeId){return drafts.flatMap(d=>(d.serverFiles||d.payload?.files||[]).filter(f=>f.status!=='已完成'&&(excludeId===undefined||f.id!==excludeId)).map(f=>timingBucket('uploadEvidence',{file:f})));}
+  async function submitPointDrafts(){
+    if(!state.config.staged)throw new Error('請教師完成 v4.0 程式、資訊清單與 upgradePointBankV4 升級後再提交。');
+    const drafts=state.pointDrafts.filter(d=>d.status!=='saved'),groups=new Map(),numbers=new Set(),heads=new Map();
+    state.stagedSending=true;$('submissionProgress').showModal();startSubmissionClock();
+    try{
+      setSubmissionProgress('正在檢查附件','檢查檔案大小與內容，尚未確認收件。',0,0,[]);
+      await prepareStagedDrafts(drafts);
+      const newKey=key();drafts.filter(d=>!d.receiptNo).forEach(d=>{d.intakeKey=d.intakeKey||newKey;if(!groups.has(d.intakeKey))groups.set(d.intakeKey,[]);groups.get(d.intakeKey).push(d);});
+      savePointProgress();
+      for(const [batchKey,items]of groups){
+        items.forEach(d=>{d.locked=true;d.status='sending';});
+        try{
+          setSubmissionProgress('正在保存申請','保存申請內容與附件清單，取得可追查的收件編號。',0,0,[...numbers]);
+          const response=await callSubmission('receiveBatch',{batchKey:batchKey,entries:items.map(d=>d.payload)},[...[...groups].slice([...groups.keys()].indexOf(batchKey)+1).map(([,entries])=>timingBucket('receiveBatch',{entries})),...pendingUploadBuckets(drafts)]);
+          if(response.preflightFailed){applyPointBatchResult(items,response);items.forEach(d=>{if(!d.locked)d.intakeKey=null;});savePointProgress();continue;}
+          const receipt=response.receipt;acceptReceipt(receipt);heads.set(receipt.receiptNo,receipt);numbers.add(receipt.receiptNo);
+          items.forEach(d=>{const item=receipt.items.find(i=>i.key===d.key);if(!item)throw new Error('收件結果缺少申請，請保留原內容重試。');d.receiptNo=receipt.receiptNo;syncStagedDraft(d,item);});savePointProgress();
+        }catch(e){markPointBatchUnknown(items,e.message);savePointProgress();}
+      }
+      for(const d of drafts.filter(d=>d.receiptNo&&d.status!=='saved')){
+        try{
+          if(!heads.has(d.receiptNo)){setSubmissionProgress('正在核對原收件','以原收件編號確認已保存的進度。',0,0,[...numbers]);heads.set(d.receiptNo,await callSubmission('receiptStatus',{receiptNo:d.receiptNo}));}
+          const receipt=heads.get(d.receiptNo);acceptReceipt(receipt);const item=receipt.items.find(i=>i.key===d.key);if(!item)throw new Error('找不到原申請。');syncStagedDraft(d,item);numbers.add(d.receiptNo);
+        }catch(e){d.status='error';d.message=e.message;}
+      }
+      const count=()=>({total:drafts.reduce((n,d)=>n+(d.serverFiles||[]).length,0),done:drafts.reduce((n,d)=>n+(d.serverFiles||[]).filter(f=>f.status==='已完成').length,0)});
+      let c=count();setSubmissionProgress(numbers.size?'已取得收件編號':'尚未確認收件',numbers.size?'接著傳送尚未完成的附件。':'請依各筆提示修正或以原內容重試。',c.done,c.total,[...numbers]);
+      for(const d of drafts.filter(d=>d.receiptNo&&d.status==='sending')){
+        try{
+          const local=[];for(const file of d.files)local.push({file:file,meta:await readFileManifest(file)});
+          for(const expected of d.serverFiles.filter(f=>f.status!=='已完成')){
+            const source=local.find(x=>x.meta.name===expected.name&&x.meta.size===expected.size&&x.meta.digest===expected.digest);if(!source)throw new Error('請選回原附件補傳：'+expected.name);
+            c=count();setSubmissionProgress('正在上傳附件',expected.name+'（每個完成後都會保存進度）',c.done,c.total,[...numbers]);
+            const file=(await readUploadFiles([source.file]))[0];const response=await callSubmission('uploadEvidence',{attachmentId:expected.id,file:file},pendingUploadBuckets(drafts,expected.id));
+            applyRecordResult(response);expected.status=response.record.attachments.find(a=>a.id===expected.id)?.status||expected.status;
+            if(response.receipt){heads.set(d.receiptNo,response.receipt);acceptReceipt(response.receipt);syncStagedDraft(d,response.receipt.items.find(i=>i.key===d.key));}
+            else if(response.record.processing?.state==='已完成')syncStagedDraft(d,{record:response.record,files:d.serverFiles,state:'已完成'});
+            savePointProgress();c=count();setSubmissionProgress('附件進度已保存','正在處理剩餘附件。',c.done,c.total,[...numbers]);
+          }
+          if(d.status!=='saved'){const receipt=heads.get(d.receiptNo);const item=receipt?.items.find(i=>i.key===d.key);if(item)syncStagedDraft(d,item);}
+          if(d.status!=='saved'){d.status='error';d.message='內容已保存，尚待伺服器檢核；可在收件進度更新或檢核。';}
+        }catch(e){
+          // 只在異常時核對一次，成功回應不增加查詢。無法核對時仍保留原識別碼。
+          try{const receipt=await callSubmission('receiptStatus',{receiptNo:d.receiptNo});acceptReceipt(receipt);syncStagedDraft(d,receipt.items.find(i=>i.key===d.key));}catch(checkError){}
+          if(d.status!=='saved'){d.status='error';d.message=e.message;d.locked=false;d.resumeOnly=true;d.expectedFiles=(d.serverFiles||[]).filter(f=>f.status!=='已完成').map(f=>f.name);d.payload=null;}
+          savePointProgress();
+        }
+      }
+      const remaining=drafts.filter(d=>d.status!=='saved').length,completed=drafts.filter(d=>d.outcome==='已完成').length,other=drafts.length-remaining-completed;
+      if(!remaining)state.pointDrafts=[];savePointProgress();renderStudent();
+      notify(remaining?'已完整收件 '+completed+' 筆；尚未完成 '+remaining+' 筆。請查看各筆提示，沿用原申請重試。':other?'完整收件 '+completed+' 筆；另有 '+other+' 筆已取消、轉補件或已由教師處理，請查看點數明細。':'申請已完整收件，等待教師審核。',Boolean(remaining||other));
+    }finally{savePointProgress();stopSubmissionClock();state.stagedSending=false;if($('submissionProgress').open)$('submissionProgress').close();}
+  }
+  $('submissionProgress').addEventListener('cancel',e=>{if(state.stagedSending)e.preventDefault();});
+  $('scratchDialog').addEventListener('close',()=>{if(state.scratchView)closeScratch();});
+  $('receiptDialog').addEventListener('close',()=>{if(!$('receiptDialog').open){clearTimeout(receiptPollTimer);state.receiptView=null;$('receiptBody').innerHTML='';}});
+  if(typeof window.addEventListener==='function')window.addEventListener('beforeunload',e=>{if(state.stagedSending){e.preventDefault();e.returnValue='';}});
+  /* BOOT */
+  if(embeddedInSite())document.body.classList.add('embedded');
+  (async()=>{try{const snapshot=await rpc('bootstrap');acceptSnapshot(snapshot);if(!state.me){clearLogin();if(snapshot.sessionError)notify(snapshot.sessionError,true);}render();}catch(e){$('app').innerHTML='<section class="card auth"><h1>尚未連線</h1><p id="initError"></p><p class="muted">請確認程式已儲存並更新部署版本。</p></section>';$('initError').textContent=e.message;}})();
+  </script>
+</body>
 </html>
